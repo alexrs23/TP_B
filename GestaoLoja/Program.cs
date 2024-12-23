@@ -1,3 +1,4 @@
+using GestaoLoja;
 using GestaoLoja.Components;
 using GestaoLoja.Components.Account;
 using GestaoLoja.Data;
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Configurar o AppConfig
+builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -61,3 +65,17 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    try
+    {
+        dbContext.Database.EnsureCreated(); // Cria o banco se ele não existir
+        Console.WriteLine("Conexão com o banco de dados bem-sucedida!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao conectar ao banco de dados: {ex.Message}");
+    }
+}

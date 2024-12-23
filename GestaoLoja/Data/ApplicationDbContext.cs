@@ -25,7 +25,10 @@ namespace GestaoLoja.Data
                 .HasOne(p => p.modoentrega)
                 .WithMany(m => m.produtos)
                 .HasForeignKey(p => p.ModoEntregaId);
-        }
 
+            modelBuilder.Entity<Produto>()
+            .Property(p => p.EmStock)
+            .HasColumnType("decimal(18,2)");
+        }
     }
 }
