@@ -1,4 +1,4 @@
-﻿@page "/categoria/details"
+﻿@page "/categorias/details"
 @using Microsoft.EntityFrameworkCore
 @using GestaoLoja.Entities
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
@@ -29,8 +29,8 @@
             -->
         </dl>
         <div>
-            <a href="@($"/categoria/edit?id={categoria.Id}")">Edit</a> |
-            <a href="@($"/categoria")">Back to List</a>
+            <a href="@($"/categorias/edit?id={categoria.Id}")">Edit</a> |
+            <a href="@($"/categorias")">Back to List</a>
         </div>
     }
 </div>

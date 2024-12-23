@@ -12,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="ModoEntrega" OnValidSubmit="AddModoEntrega" FormName="create" Enhance>
+        <EditForm method="post" Model="@ModoEntrega" OnValidSubmit="AddModoEntrega" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
@@ -31,7 +31,7 @@
 </div>
 
 <div>
-    <a href="/modoentregas">Back to List</a>
+    <a href="/modosentrega">Back to List</a>
 </div>
 
 @code {
@@ -44,6 +44,6 @@
         using var context = DbFactory.CreateDbContext();
         context.ModosEntrega.Add(ModoEntrega);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/modoentregas");
+        NavigationManager.NavigateTo("/modosentrega");
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/categoria/delete"
+﻿@page "/categorias/delete"
 @using Microsoft.EntityFrameworkCore
 @using GestaoLoja.Entities
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
@@ -37,7 +37,7 @@
         -->
         <EditForm method="post" Model="categoria" OnValidSubmit="DeleteCategoria" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(categoria is null)">Delete</button> |
-            <a href="/categoria">Back to List</a>
+            <a href="/categorias">Back to List</a>
         </EditForm>
     }
 </div>
@@ -64,6 +64,6 @@
         using var context = DbFactory.CreateDbContext();
         context.Categorias.Remove(categoria!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/categoria");
+        NavigationManager.NavigateTo("/categorias");
     }
 }

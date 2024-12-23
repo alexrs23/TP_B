@@ -27,7 +27,7 @@
         </dl>
         <EditForm method="post" Model="modoentrega" OnValidSubmit="DeleteModoEntrega" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(modoentrega is null)">Delete</button> |
-            <a href="/modoentregas">Back to List</a>
+            <a href="/modosentrega">Back to List</a>
         </EditForm>
     }
 </div>
@@ -54,6 +54,6 @@
         using var context = DbFactory.CreateDbContext();
         context.ModosEntrega.Remove(modoentrega!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/modoentregas");
+        NavigationManager.NavigateTo("/modosentrega");
     }
 }

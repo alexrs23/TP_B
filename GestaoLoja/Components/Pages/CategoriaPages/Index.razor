@@ -11,7 +11,7 @@
 <h1>Index</h1>
 
 <p>
-    <a href="categoria/create">Create New</a>
+    <a href="categorias/create">Create New</a>
 </p>
 
 <QuickGrid Class="table" Items="context.Categorias">
@@ -21,9 +21,9 @@
     <PropertyColumn Property="categoria => categoria.Imagem" />
 
     <TemplateColumn Context="categoria">
-        <a href="@($"categoria/edit?id={categoria.Id}")">Edit</a> |
-        <a href="@($"categoria/details?id={categoria.Id}")">Details</a> |
-        <a href="@($"categoria/delete?id={categoria.Id}")">Delete</a>
+        <a href="@($"categorias/edit?id={categoria.Id}")">Edit</a> |
+        <a href="@($"categorias/details?id={categoria.Id}")">Details</a> |
+        <a href="@($"categorias/delete?id={categoria.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>
 

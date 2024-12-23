@@ -1,4 +1,4 @@
-﻿@page "/categoria/create"
+﻿@page "/categorias/create"
 @using Microsoft.EntityFrameworkCore
 @using GestaoLoja.Entities
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
@@ -43,7 +43,7 @@
 </div>
 
 <div>
-    <a href="/categoria">Back to List</a>
+    <a href="/categorias">Back to List</a>
 </div>
 
 @code {
@@ -56,6 +56,6 @@
         using var context = DbFactory.CreateDbContext();
         context.Categorias.Add(Categoria);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/categoria");
+        NavigationManager.NavigateTo("/categorias");
     }
 }

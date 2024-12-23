@@ -1,4 +1,4 @@
-﻿@page "/categoria/edit"
+﻿@page "/categorias/edit"
 @using Microsoft.EntityFrameworkCore
 @using GestaoLoja.Entities
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
@@ -51,7 +51,7 @@ else
 }
 
 <div>
-    <a href="/categoria">Back to List</a>
+    <a href="/categorias">Back to List</a>
 </div>
 
 @code {
@@ -95,7 +95,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/categoria");
+        NavigationManager.NavigateTo("/categorias");
     }
 
     private bool CategoriaExists(int id)
