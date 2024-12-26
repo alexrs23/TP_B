@@ -12,18 +12,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="@ModoEntrega" OnValidSubmit="AddModoEntrega" FormName="create" Enhance>
+        <EditForm method="post" Model="modoEntrega" OnValidSubmit="AddModoEntrega" FormName="createModo" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome:</label> 
-                <InputText id="nome" @bind-Value="ModoEntrega.Nome" class="form-control" aria-required="true"/> 
-                <ValidationMessage For="() => ModoEntrega.Nome" class="text-danger" /> 
+                <InputText id="nome" @bind-Value="modoEntrega.Nome" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => modoEntrega.Nome" class="text-danger" /> 
             </div>        
             <div class="mb-3">
                 <label for="detalhe" class="form-label">Detalhe:</label> 
-                <InputText id="detalhe" @bind-Value="ModoEntrega.Detalhe" class="form-control" /> 
-                <ValidationMessage For="() => ModoEntrega.Detalhe" class="text-danger" /> 
+                <InputText id="detalhe" @bind-Value="modoEntrega.Detalhe" class="form-control" /> 
+                <ValidationMessage For="() => modoEntrega.Detalhe" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
@@ -36,13 +36,14 @@
 
 @code {
     [SupplyParameterFromForm]
-    private ModoEntrega ModoEntrega { get; set; } = new();
+    private ModoEntrega modoEntrega { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+
+
     private async Task AddModoEntrega()
     {
         using var context = DbFactory.CreateDbContext();
-        context.ModosEntrega.Add(ModoEntrega);
+        context.ModosEntrega.Add(modoEntrega);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/modosentrega");
     }

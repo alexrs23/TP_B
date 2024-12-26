@@ -12,23 +12,23 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="Categoria" OnValidSubmit="AddCategoria" FormName="create" Enhance>
+        <EditForm method="post" Model="categoria" OnValidSubmit="AddCategoria" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome:</label> 
-                <InputText id="nome" @bind-Value="Categoria.Nome" class="form-control" /> 
-                <ValidationMessage For="() => Categoria.Nome" class="text-danger" /> 
+                <InputText id="nome" @bind-Value="categoria.Nome" class="form-control" /> 
+                <ValidationMessage For="() => categoria.Nome" class="text-danger" /> 
             </div>        
             <div class="mb-3">
                 <label for="ordem" class="form-label">Ordem:</label> 
-                <InputNumber id="ordem" @bind-Value="Categoria.Ordem" class="form-control" /> 
-                <ValidationMessage For="() => Categoria.Ordem" class="text-danger" /> 
+                <InputNumber id="ordem" @bind-Value="categoria.Ordem" class="form-control" /> 
+                <ValidationMessage For="() => categoria.Ordem" class="text-danger" /> 
             </div>        
             <div class="mb-3">
                 <label for="urlimagem" class="form-label">UrlImagem:</label> 
-                <InputText id="urlimagem" @bind-Value="Categoria.UrlImagem" class="form-control" /> 
-                <ValidationMessage For="() => Categoria.UrlImagem" class="text-danger" /> 
+                <InputText id="urlimagem" @bind-Value="categoria.UrlImagem" class="form-control" /> 
+                <ValidationMessage For="() => categoria.UrlImagem" class="text-danger" /> 
             </div>    
             <!--
             <div class="mb-3">
@@ -48,13 +48,13 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Categoria Categoria { get; set; } = new();
+    private Categoria categoria { get; set; } = new();
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddCategoria()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Categorias.Add(Categoria);
+        context.Categorias.Add(categoria);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/categorias");
     }
