@@ -40,7 +40,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
-    .AddDefaultTokenProviders()
     .AddDefaultUI();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
@@ -65,8 +64,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.UseAuthentication();
-app.UseAuthorization();
+/*app.UseAuthentication();
+app.UseAuthorization();*/
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -1,0 +1,48 @@
+﻿@page "/utilizadores/delete"
+@using GestaoLoja.Data
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+
+<PageTitle>Remover Utilizador</PageTitle>
+
+<h3>Remover</h3>
+
+<div>
+    <h4>Confirma a rmeoção deste utilizador?</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Nome</dt>
+        <dd class="col-sm-10">@user.Nome</dd>
+        <dt class="col-sm-2">Apelido</dt>
+        <dd class="col-sm-10">@user.Apelido</dd>
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@user.Email</dd>
+        <dt class="col-sm-2">UserName</dt>
+        <dd class="col-sm-10">@user.UserName</dd>
+        <dt class="col-sm-2">PhoneNumber</dt>
+        <dd class="col-sm-10">@user.PhoneNumber</dd>
+    </dl>
+</div>
+
+<div>
+    <button class="btn btn-danger" @onclick="DeleteUser">Delete</button>
+    <a href="/utilizadores" class="btn btn-secondary">Cancel</a>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ApplicationUser user { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await DbContext.Users.FindAsync(Id.ToString());
+    }
+
+    private async Task DeleteUser()
+    {
+        DbContext.Users.Remove(user);
+        await DbContext.SaveChangesAsync();
+        Navigation.NavigateTo("/utilizadores");
+    }
+}

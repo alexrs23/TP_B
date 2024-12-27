@@ -1,0 +1,46 @@
+﻿@page "/utilizadores/create"
+@using GestaoLoja.Data
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+
+<PageTitle>Regitar Utilizador</PageTitle>
+
+<h3>Registar</h3>
+
+<EditForm method="post" Model="newUser" OnValidSubmit="HandleValidSubmit" FormName="create" Enhance>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Nome">Nome</label>
+        <InputText id="Nome" class="form-control" @bind-Value="newUser.Nome" />
+    </div>
+    <div class="form-group">
+        <label for="Apelido">Apelido</label>
+        <InputText id="Apelido" class="form-control" @bind-Value="newUser.Apelido" />
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <InputText id="Email" class="form-control" @bind-Value="newUser.Email" />
+    </div>
+    <div class="form-group">
+        <label for="UserName">UserName</label>
+        <InputText id="UserName" class="form-control" @bind-Value="newUser.UserName" />
+    </div>
+    <div class="form-group">
+        <label for="PhoneNumber">PhoneNumber</label>
+        <InputText id="PhoneNumber" class="form-control" @bind-Value="newUser.PhoneNumber" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+    private ApplicationUser newUser = new ();
+
+    private async Task HandleValidSubmit()
+    {
+        DbContext.Users.Add(newUser);
+        await DbContext.SaveChangesAsync();
+        Navigation.NavigateTo("/utilizadores");
+    }
+}

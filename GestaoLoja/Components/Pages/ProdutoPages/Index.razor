@@ -6,12 +6,12 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Produtos</PageTitle>
 
-<h1>Index</h1>
+<h1>Produtos</h1>
 
 <p>
-    <a href="produtos/create">Create New</a>
+    <a href="produtos/create">Criar Novo</a>
 </p>
 
 <QuickGrid Class="table" Items="context.Produtos">

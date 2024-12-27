@@ -1,0 +1,47 @@
+﻿@page "/utilizadores/details"
+@using GestaoLoja.Data
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Detalhes do Utilizador</PageTitle>
+
+<h3>Detalhes</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Nome</dt>
+        <dd class="col-sm-10">@user.Nome</dd>
+        <dt class="col-sm-2">Apelido</dt>
+        <dd class="col-sm-10">@user.Apelido</dd>
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@user.Email</dd>
+        <dt class="col-sm-2">UserName</dt>
+        <dd class="col-sm-10">@user.UserName</dd>
+        <dt class="col-sm-2">PhoneNumber</dt>
+        <dd class="col-sm-10">@user.PhoneNumber</dd>
+    </dl>
+</div>
+
+<div>
+    <a href="/utilizadores" class="btn btn-secondary">Back to List</a>
+</div>
+
+@code {
+
+    private ApplicationUser? user;
+
+    [SupplyParameterFromQuery]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        user = await context.Users.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if(user == null)
+		{
+			Navigation.NavigateTo("notfound");
+		}
+    }
+}

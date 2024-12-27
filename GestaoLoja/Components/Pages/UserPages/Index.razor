@@ -1,0 +1,45 @@
+﻿@page "/utilizadores"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using GestaoLoja.Data
+@using GestaoLoja.Entities
+@implements IAsyncDisposable
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Utilizadores</PageTitle>
+
+<h1>Utilizadores</h1>
+
+<p>
+    <a href="utilizadores/create">Criar Novo</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Users">
+    <PropertyColumn Property="user => user.Nome" Title="Nome" />
+    <PropertyColumn Property="user => user.Apelido" Title="Apelido" />
+    <PropertyColumn Property="user => user.Email" Title="Email" />
+    <PropertyColumn Property="user => user.UserName" Title="UserName" />
+    <PropertyColumn Property="user => user.PhoneNumber" Title="PhoneNumber" />
+
+    <TemplateColumn Context="user">
+        <a href="@($"utilizadores/edit/{user.Id}")">Edit</a> |
+        <a href="@($"utilizadores/details/{user.Id}")">Details</a> |
+        <a href="@($"utilizadores/delete/{user.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+    private List<ApplicationUser> users = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        context = await DbFactory.CreateDbContextAsync();
+        users = await context.Users.ToListAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await context.DisposeAsync();
+    }
+}
