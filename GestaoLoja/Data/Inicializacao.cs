@@ -7,7 +7,7 @@ namespace GestaoLoja.Data
         public static async Task CriaDadosIniciais(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             //Adicionar três perfis/roles 
-            string[] roles = ["Admin", "Gestor", "Cliente"];
+            string[] roles = ["Admin", "Gestor", "Cliente", "Anonimo"];
 
             foreach (var role in roles)
             {

@@ -10,6 +10,7 @@ namespace GestaoLoja.Data
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<ModoEntrega> ModosEntrega { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
