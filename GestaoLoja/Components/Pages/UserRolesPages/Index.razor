@@ -22,9 +22,8 @@
     <PropertyColumn Property="user => user.PhoneNumber" Title="PhoneNumber" />
 
     <TemplateColumn Context="user">
-        <a href="@($"utilizadores/edit/{user.Id}")">Edit</a> |
-        <a href="@($"utilizadores/details/{user.Id}")">Details</a> |
-        <a href="@($"utilizadores/delete/{user.Id}")">Delete</a>
+        <a href="@($"utilizadores/details?id={user.Id}")">Details</a> |
+        <a href="@($"utilizadores/assign?id={user.Id}")">Assign</a>
     </TemplateColumn>
 </QuickGrid>
 
