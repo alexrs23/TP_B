@@ -1,0 +1,142 @@
+﻿@page "/utilizadores/assign"
+@using GestaoLoja.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity
+@inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager Navigation
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+<PageTitle>Detalhes do Utilizador</PageTitle>
+
+<h3>Detalhes</h3>
+
+@if (user != null)
+
+{
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">Nome</dt>
+            <dd class="col-sm-10">@user.Nome</dd>
+            <dt class="col-sm-2">Apelido</dt>
+            <dd class="col-sm-10">@user.Apelido</dd>
+            <dt class="col-sm-2">Email</dt>
+            <dd class="col-sm-10">@user.Email</dd>
+            <dt class="col-sm-2">UserName</dt>
+            <dd class="col-sm-10">@user.UserName</dd>
+            <dt class="col-sm-2">PhoneNumber</dt>
+            <dd class="col-sm-10">@user.PhoneNumber</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4>Atribuir Roles</h4>
+        <EditForm method="post" Model="user" OnValidSubmit="AssignRole" FormName="assign" Enhance>
+            <div class="form-group">
+                <label for="roles">Roles</label>
+                <InputSelect id="roles" @bind-Value="selectedRole">
+                    @foreach (var role in roles)
+
+                    {
+                        <option value="@role">@role</option>
+                    }
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </EditForm>
+    </div>
+
+    <div>
+        <a href="/utilizadores" class="btn btn-secondary">Back to List</a>
+    </div>
+}
+
+else
+
+{
+    <p>Utilizador não encontrado.</p>
+}
+
+@code {
+    private ApplicationUser? user;
+
+    private List<string> roles = new();
+
+    private string selectedRole = string.Empty;
+
+
+
+    [SupplyParameterFromQuery]
+
+    private string Id { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+
+    {
+
+        using var context = DbFactory.CreateDbContext();
+
+        user = await context.Users.FirstOrDefaultAsync(m => m.Id == Id);
+
+
+
+        if (user == null)
+
+        {
+
+            Navigation.NavigateTo("notfound");
+
+            return;
+
+        }
+
+
+
+        roles = await RoleManager.Roles.Select(r => r.Name).ToListAsync();
+
+    }
+
+
+
+    private async Task AssignRole()
+
+    {
+
+        if (user != null && !string.IsNullOrEmpty(selectedRole))
+
+        {
+
+            var result = await UserManager.AddToRoleAsync(user, selectedRole);
+
+            if (result.Succeeded)
+
+            {
+
+                // Role assigned successfully
+
+                Navigation.NavigateTo($"/utilizadores");
+
+            }
+
+            else
+
+            {
+
+                // Handle errors
+
+                foreach (var error in result.Errors)
+
+                {
+
+                    Console.WriteLine(error.Description);
+
+                }
+
+            }
+
+        }
+
+    }
+}
