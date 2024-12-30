@@ -181,7 +181,6 @@ public class ApiService : IApiServices
 
             return null;
         }
-
     }
     public async Task<(T?Data, string?ErrorMessage)>GetAsync<T>(string endpoint)
     {

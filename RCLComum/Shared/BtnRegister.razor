@@ -1,10 +1,17 @@
-﻿
-<a href="/registeruser" class="btn-favoritos" t>
+﻿@inject NavigationManager NavigationManager
+<a @onclick="NavigateToRegister" class="btn-favoritos" t>
     <img src="images/register.png" alt="Register" />
     <p style="color:Red">Registar</p>
 </a>
 
 
-@code {
 
+@code {
+    private void NavigateToRegister()
+
+    {
+
+        NavigationManager.NavigateTo("/register");
+
+    }
 }

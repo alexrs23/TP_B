@@ -44,10 +44,12 @@
         var json = System.Text.Json.JsonSerializer.Serialize(loginData);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-
         try
         {
             var response = await Http.PostAsync("https://xjjfwfbn-7260.uks1.devtunnels.ms/api/Acc/login", content);
+            Console.WriteLine($"Login Response: {response.StatusCode}");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Login Content: {responseContent}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -56,13 +58,15 @@
             }
             else
             {
-                // Login falhou. Mostrar mensagem de erro
                 errorMessage = "Falha ao fazer o login. Verifica as tuas credenciais.";
+                StateHasChanged();
             }
         }
         catch (Exception ex)
         {
             errorMessage = $"Erro ao tentar fazer login: {ex.Message}";
+            Console.WriteLine($"Erro: {ex.Message}");
+            StateHasChanged();
         }
     }
 }
