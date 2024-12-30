@@ -52,40 +52,59 @@ public class ApiService : IApiServices
 
     // ********************* Categorias  **********
 
-    public async Task<List<Categoria>> GetCategorias()
+    public async Task<List<Categoria>?> GetCategorias()
     {
-
         string endpoint = $"api/Categorias";
-        Console.WriteLine($"GetCategorias: Making request to {AppConfig.BaseUrl}{endpoint}");
+
         try
         {
             HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"{AppConfig.BaseUrl}{endpoint}");
-            Console.WriteLine($"GetCategorias: Response status {httpResponseMessage.StatusCode}");
-            Console.WriteLine($"GetCategorias: {categorias.Count} categories loaded!");
+
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                if (categorias != null && categorias.Count > 0)
+                string content = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                _logger.LogInformation($"GetCategorias: Response content: {content}"); // log
+                if (!string.IsNullOrWhiteSpace(content))
                 {
-                    foreach (var cat in categorias)
-                    {
-                        Console.WriteLine($"categoria nome: {cat.Nome}, imagem tamanho: {cat.Imagem?.Length}");
-                    }
+                    //categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
+                    categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions) ?? new List<Categoria>();
+                    return categorias;
                 }
                 else
                 {
-                    Console.WriteLine($"GetCategorias: Error! HTTP status code: {httpResponseMessage.StatusCode}");
+                    _logger.LogWarning($"GetCategorias: API retornou conteúdo vazio.");
+                    return null;
                 }
 
             }
+
+            return await HandleErrorResponse<List<Categoria>>(httpResponseMessage);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-
+            return HandleException<List<Categoria>>(ex);
+        }
+    }
+    private async Task<T?> HandleErrorResponse<T>(HttpResponseMessage response) where T : class
+    {
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            string errorMessage = "Unauthorized";
+            _logger.LogWarning(errorMessage);
             return null;
         }
+        string generalErrorMessage = $"Erro na requisição: {response.ReasonPhrase}";
+        _logger.LogError(generalErrorMessage);
+        return null;
 
-        return categorias;
+    }
+
+    private T? HandleException<T>(Exception ex, string? customMessage = null) where T : class
+    {
+        string errorMessage = customMessage ?? $"Erro inesperado: {ex.Message}";
+        _logger.LogError(errorMessage);
+        return null;
     }
 
     // ********************* Produtos  **********
