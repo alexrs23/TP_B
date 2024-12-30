@@ -88,6 +88,15 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://seu-frontend.com")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 //builder.Services.AddIdentityApiEndpoints<ApplicationUser>().AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
@@ -103,6 +112,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gestao da Loja API (v1)");
     });
 }
+
+// Configure the HTTP request pipeline.
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

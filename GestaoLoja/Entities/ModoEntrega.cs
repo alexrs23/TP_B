@@ -15,4 +15,5 @@ public class ModoEntrega
     [JsonIgnore]
     public ICollection<Produto>? produtos { get; set; }
 
+
 }

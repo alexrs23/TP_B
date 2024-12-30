@@ -18,6 +18,7 @@ namespace GestaoLoja.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
             // Configurações adicionais podem ser feitas aqui
             modelBuilder.Entity<Produto>()
                 .HasOne(p => p.categoria)

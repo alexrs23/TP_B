@@ -15,10 +15,11 @@
 </p>
 
 <QuickGrid Class="table" Items="context.Categorias">
+    <TemplateColumn Context="categoria">
+        <img src="@categoria.UrlImagem" alt="Imagem do Produto" style="max-width: 100px; max-height: 100px;" />
+    </TemplateColumn>
     <PropertyColumn Property="categoria => categoria.Nome" />
     <PropertyColumn Property="categoria => categoria.Ordem" />
-    <PropertyColumn Property="categoria => categoria.UrlImagem" />
-    <PropertyColumn Property="categoria => categoria.Imagem" />
 
     <TemplateColumn Context="categoria">
         <a href="@($"categorias/edit?id={categoria.Id}")">Edit</a> |

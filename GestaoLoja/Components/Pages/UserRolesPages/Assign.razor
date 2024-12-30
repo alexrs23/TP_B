@@ -6,6 +6,7 @@
 @inject NavigationManager Navigation
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Detalhes do Utilizador</PageTitle>
 
@@ -60,7 +61,7 @@ else
 @code {
     private ApplicationUser? user;
 
-    private List<string> roles = new();
+    private List<string?> roles = new();
 
     private string selectedRole = string.Empty;
 
@@ -108,15 +109,61 @@ else
 
         {
 
-            var result = await UserManager.AddToRoleAsync(user, selectedRole);
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-            if (result.Succeeded)
+            var currentUser = await UserManager.GetUserAsync(authState.User);
+
+
+
+            if (currentUser != null)
 
             {
 
-                // Role assigned successfully
+                /*var result = await UserManagementService.AssignRoleAsync(user, selectedRole, currentUser);
 
-                Navigation.NavigateTo($"/utilizadores");
+                if (result)
+
+                {
+
+                    // Role assigned successfully
+
+                    Navigation.NavigateTo($"/utilizadores");
+
+                }
+
+                else
+
+                {
+
+                    // Handle errors
+
+                    Console.WriteLine("Falha ao atribuir role.");
+
+                }*/
+
+            }
+
+        }
+
+    }
+
+
+
+    private async Task CheckUserRole()
+
+    {
+
+        if (user != null)
+
+        {
+
+            /*bool hasRole = await UserManagementService.UserHasRoleAsync(user, "RoleName");
+
+            if (hasRole)
+
+            {
+
+                Console.WriteLine("O usuário possui a role especificada.");
 
             }
 
@@ -124,18 +171,10 @@ else
 
             {
 
-                // Handle errors
-
-                foreach (var error in result.Errors)
-
-                {
-
-                    Console.WriteLine(error.Description);
-
-                }
+                Console.WriteLine("O usuário não possui a role especificada.");
 
             }
-
+            */
         }
 
     }

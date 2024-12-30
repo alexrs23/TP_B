@@ -28,6 +28,7 @@ public class Produto
 
     //navigation
     public int CategoriaId { get; set; }
+    //public string CategoriaNome { get; set; }
     public Categoria categoria { get; set; }
 
     [JsonIgnore]

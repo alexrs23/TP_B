@@ -12,10 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RCLComum\RCLComum.csproj" />
     <ProjectReference Include="..\RCL\RCLAPI.csproj" />
   </ItemGroup>
 

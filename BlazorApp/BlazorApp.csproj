@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RCLComum\RCLComum.csproj" />
     <ProjectReference Include="..\RCLProdutos\RCLProdutos.csproj" />
+    <ProjectReference Include="..\RCL\RCLAPI.csproj" />
   </ItemGroup>
 
 </Project>
