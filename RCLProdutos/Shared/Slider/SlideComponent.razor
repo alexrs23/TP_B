@@ -10,7 +10,7 @@
 
             @if (produto != null && produto.UrlImagem != null)
             {
-                <img title="Imagem Actual: @produto.UrlImagem" height="100" id="imagePreview" src="data:image/@produto.UrlImagem" />
+                <img title="Imagem Actual: @produto.Nome" height="100" id="imagePreview" src="images/@produto.UrlImagem" />
             }
 
         </div>
@@ -56,9 +56,9 @@
 
                             <div class="row justify-content-md-around" style="height: 80px;">
                                 <div class="col-md-12 ">
-                                    @if (produto.Imagem != null)
+                                    @if (produto.UrlImagem != null)
                                     {
-                                        <img style="height:80px" title="Imagem Actual: @produto.UrlImagem" src="data:image/*;base64,produto.Imagem)" />
+                                        <img style="height:80px" title="Imagem Actual: @produto.Nome" src="images/@produto.UrlImagem" />
                                     }
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                 <div class="col-md-6 ">
                                     @if (produto.Imagem != null)
                                     {
-                                        <img style="height:80px" title="Imagem Actual: @produto.UrlImagem" src="data:image/*;base64,produto.Imagem)" />
+                                        <img style="height:80px" title="Imagem Actual: @produto.Nome" src="images/@produto.UrlImagem)" />
                                     }
                                 </div>
                             </div>

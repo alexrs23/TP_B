@@ -9,7 +9,7 @@
             {              
                 <p class="font-valor1">
 
-                    <img title="Imagem Actual: @sugestProduto.UrlImagem" style="height:60px" id="imagePreview" src="data:image/@sugestProduto.UrlImagem;)" />
+                    <img title="Imagem Actual: @sugestProduto.Nome" style="height:60px" id="imagePreview" src="/images/@sugestProduto.UrlImagem;)" />
 
                     A nossa sugestão <span class="font-valor2">@sugestProduto.Nome @sugestProduto.Preco  €/@sugestProduto.modoentrega.Nome</span>
                 </p>
@@ -64,7 +64,7 @@
                                     @if (sugestProduto != null)
 
                                     {
-                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="data:image/@sugestProduto.UrlImagem;)" />
+                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="images/@sugestProduto.UrlImagem;)" />
                                     }
                                     @if (sugestProduto != null && sugestProduto.modoentrega != null)
                                     {
@@ -118,9 +118,9 @@
                         @if (sugestProduto.Disponivel)
 
                         {
-                            <a href="" @onclick='(() => AbreFecha("fecha","abre"))'> <img alt="Comprar" src="images/cart.png" width="30" /></a>
+                            <a href="" @onclick='(() => AbreFecha("fecha","abre"))'> <img alt="Comprar" src="/images/cart.png" width="30" /></a>
                         }
-                        <a href="" @onclick='(() => AbreFecha("fecha",""))'> <img alt="Sair" src="images/exit.png" width="30" /></a>
+                        <a href="" @onclick='(() => AbreFecha("fecha",""))'> <img alt="Sair" src="/images/exit.png" width="30" /></a>
                     </div>
 
                     @{
