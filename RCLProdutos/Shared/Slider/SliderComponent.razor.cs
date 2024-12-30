@@ -94,65 +94,78 @@ namespace RCLProdutos.Shared.Slider
             }
 
                 await LoadMarginsLeft();
+                if(produtos != null)
+                {
+                    int qtdProd = produtos.Count;
 
-                int qtdProd = produtos.Count;
+                    witdthPerc = qtdProd * 100;
 
-                witdthPerc = qtdProd * 100;
+                    sliderUtilsService.WidthSlide2 = 100f / qtdProd;
 
-                sliderUtilsService.WidthSlide2 = 100f / qtdProd;
-
-                sliderUtilsService.OnChange += StateHasChanged;
+                    sliderUtilsService.OnChange += StateHasChanged;
+                }
+                
         }
 
         async Task LoadMarginsLeft()
         {
-            foreach (var produto in produtos)
+            if(produtos != null)
             {
-                sliderUtilsService.MarginLeftSlide.Add("margin-left:0%");
+                foreach (var produto in produtos)
+                {
+                    sliderUtilsService.MarginLeftSlide.Add("margin-left:0%");
+                }
             }
+            
         }
 
         void PreviousSlide()
         {
-            if (sliderUtilsService.CountSlide != 0)
+            if (sliderUtilsService.CountSlide > 0)
             {
-                sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide - 1] = "margin-left:0%";
-                sliderUtilsService.CountSlide--;
+                sliderUtilsService.CountSlide--; // Decrementa CountSlide primeiro
+                sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide] = "margin-left:0%"; // Usa o CountSlide depois de decrementar
                 IsDisabledNext = false;
                 IsDisbledPrevious = false;
             }
             else
             {
-                sliderUtilsService.MarginLeftSlide[0] = "margin-lef:0%";
-                IsDisbledPrevious = true;
+                if (sliderUtilsService.MarginLeftSlide.Count > 0) // Verifica se a lista contém pelo menos 1 elemento
+                {
+                    sliderUtilsService.MarginLeftSlide[0] = "margin-lef:0%";
+                    IsDisbledPrevious = true;
+                }
             }
             sliderUtilsService.Index = sliderUtilsService.CountSlide;
         }
 
+
         void NextSlide()
         {
-            sliderUtilsService.CountSlide++;
-            sliderUtilsService.Index = sliderUtilsService.CountSlide;
-            if (sliderUtilsService.CountSlide < sliderUtilsService.MarginLeftSlide.Count)
+            if (sliderUtilsService.CountSlide < sliderUtilsService.MarginLeftSlide.Count) // Verifica se o indice é valido
             {
-                string WidthSlideS = (Convert.ToString(sliderUtilsService.WidthSlide2));
 
+                string WidthSlideS = (Convert.ToString(sliderUtilsService.WidthSlide2));
                 WidthSlideS = WidthSlideS.Replace(",", ".");
 
                 //sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide - 1] = $"margin-left:-{WidthSlide}%";
-
-                sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide - 1] = $"margin-left:-{sliderUtilsService.WidthSlide2}%";
-
-
-                sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide - 1] = $"margin-left:-12.5%";
-
-                IsDisabledNext = false;
-                IsDisbledPrevious = false;
+                sliderUtilsService.MarginLeftSlide[sliderUtilsService.CountSlide] = $"margin-left:-{sliderUtilsService.WidthSlide2}%"; // Altera o indice aqui
             }
-            else
+
+
+            sliderUtilsService.CountSlide++;
+            sliderUtilsService.Index = sliderUtilsService.CountSlide;
+
+
+            if (sliderUtilsService.CountSlide >= sliderUtilsService.MarginLeftSlide.Count) // Verifica depois do incremento
             {
                 IsDisabledNext = true;
             }
+            else
+            {
+                IsDisabledNext = false;
+            }
+            IsDisbledPrevious = false;
         }
     }
 }

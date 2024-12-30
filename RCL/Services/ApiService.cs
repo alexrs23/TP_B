@@ -45,7 +45,7 @@ public class ApiService : IApiServices
 
     public async Task<(ImagemPerfil? ImagemPerfil, string? ErrorMessage)> GetImagemPerfilUsuario()
     {
-        string endpoint = "api/Usuarios/imagemperfil";
+        string endpoint = "$api/Usuarios/imagemperfil";
 
         return await GetAsync<ImagemPerfil>(endpoint);
     }
@@ -56,17 +56,26 @@ public class ApiService : IApiServices
     {
 
         string endpoint = $"api/Categorias";
-
+        Console.WriteLine($"GetCategorias: Making request to {AppConfig.BaseUrl}{endpoint}");
         try
         {
             HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"{AppConfig.BaseUrl}{endpoint}");
-
+            Console.WriteLine($"GetCategorias: Response status {httpResponseMessage.StatusCode}");
+            Console.WriteLine($"GetCategorias: {categorias.Count} categories loaded!");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                string content = "";
+                if (categorias != null && categorias.Count > 0)
+                {
+                    foreach (var cat in categorias)
+                    {
+                        Console.WriteLine($"categoria nome: {cat.Nome}, imagem tamanho: {cat.Imagem?.Length}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"GetCategorias: Error! HTTP status code: {httpResponseMessage.StatusCode}");
+                }
 
-                content = await httpResponseMessage.Content.ReadAsStringAsync();
-                categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
             }
         }
         catch (Exception ex)
@@ -89,7 +98,7 @@ public class ApiService : IApiServices
     public async Task<List<ProdutoDTO>> GetProdutosEspecificos(string produtoTipo, int? IdCategoria)
     {
 
-        string endpoint = "";
+        string endpoint = $"/";
 
         if (produtoTipo == "categoria" && IdCategoria != null)
         {
@@ -276,7 +285,7 @@ public class ApiService : IApiServices
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await PostRequest("identity/login", content);
+            var response = await PostRequest("api/Acc/login", content);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError($"Erro ao enviar requisição Http: {response.StatusCode}");

@@ -1,11 +1,13 @@
-﻿
-<a href="/modalogin" class="btn-favoritos" t>
+﻿@inject NavigationManager NavigationManager
+
+<a @onclick="NavigateToLogin" class="btn-favoritos">
     <img src="images/icoperfil.png" alt="Login" />
     <p style="color:Red">Login</p>
 </a>
 
-
-
 @code {
-
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
 }

@@ -11,11 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{C8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RCLAPI", "RCL\RCLAPI.csproj", "{1B2E6FA7-FF75-4D29-92EA-0F95D5AEC92C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{8D2A4244-1C97-4708-BA1B-D051D77989AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{8D2A4244-1C97-4708-BA1B-D051D77989AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RCLComum", "RCLComum\RCLComum.csproj", "{09EB16EE-ED4A-4E62-8EF9-1063C6E3F8FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RCLComum", "RCLComum\RCLComum.csproj", "{09EB16EE-ED4A-4E62-8EF9-1063C6E3F8FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RCLProdutos", "RCLProdutos\RCLProdutos.csproj", "{DE880FE4-D9D0-4442-A9CB-1340624EEA38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RCLProdutos", "RCLProdutos\RCLProdutos.csproj", "{DE880FE4-D9D0-4442-A9CB-1340624EEA38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

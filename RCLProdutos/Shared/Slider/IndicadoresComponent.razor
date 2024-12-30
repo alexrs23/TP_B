@@ -1,4 +1,10 @@
-﻿<div class="nav-item-auto">
+﻿@using RCLProdutos.Shared.CardProduto;
+@using RCLProdutos.Shared.Cards;
+@using RCLProdutos.Shared.Slider;
+
+@inject NavigationManager NavigationManager
+
+<div class="nav-item-auto">
     @foreach(var indicador in Produtos)
     {
         @if (Produtos.IndexOf(indicador) != sliderUtilsService.Index)

@@ -1,8 +1,6 @@
-﻿@using Microsoft.EntityFrameworkCore
-
-@using RCLAPI.Services
-@using Microsoft.AspNetCore.Components
+﻿@using RCLAPI.Services
 @using RCLAPI.DTO
+@using Microsoft.AspNetCore.Components
 @using RCLProdutos.Shared.Slider
 @using RCLProdutos.Shared.Cards
 @using RCLProdutos.Shared.CardProduto
@@ -11,7 +9,8 @@
 
 @* <div class="card" style="background-image:url(@pathurlimg); @marginLeft;position:center"> *@
 
-@if(categoria!.Imagem is not null){
+@if (categoria!.Imagem is not null)
+{
     <div title="@categoria!.Nome" class="card" style="background-image:url(data:image/*;base64,@(Convert.ToBase64String(categoria.Imagem))); @marginLeft;position:center">
         <div>
             <p>@categoria!.Nome</p>
