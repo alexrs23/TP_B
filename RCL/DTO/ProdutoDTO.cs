@@ -40,7 +40,7 @@ public class ProdutoDTO
     public int CategoriaId { get; set; }
     public Categoria categoria { get; set; }
 
-    public byte[]? Imagem { get; set; }
+    public string Imagem { get; set; }
 
     [NotMapped]
     public IFormFile? ImageFile { get; set; }

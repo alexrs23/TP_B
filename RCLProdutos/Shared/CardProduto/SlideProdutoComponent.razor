@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/slide"
 
 @using RCLProdutos.Shared.CardProduto
 
@@ -9,7 +9,7 @@
             {              
                 <p class="font-valor1">
 
-                    <img title="Imagem Actual: @sugestProduto.UrlImagem" style="height:60px" id="imagePreview" src="data:image/*;base64,@(Convert.ToBase64String(sugestProduto.Imagem))" />
+                    <img title="Imagem Actual: @sugestProduto.UrlImagem" style="height:60px" id="imagePreview" src="data:image/@sugestProduto.UrlImagem;)" />
 
                     A nossa sugestão <span class="font-valor2">@sugestProduto.Nome @sugestProduto.Preco  €/@sugestProduto.modoentrega.Nome</span>
                 </p>
@@ -61,15 +61,16 @@
 
                             <div class="row justify-content-md-around" style="height: 80px;">
                                 <div class="col-md-12 ">
-                                    @if (sugestProduto != null && sugestProduto.Imagem != null && sugestProduto.Imagem.Length > 0)
+                                    @if (sugestProduto != null)
 
                                     {
-                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="data:image/*;base64,@(Convert.ToBase64String(sugestProduto.Imagem))" />
+                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="data:image/@sugestProduto.UrlImagem;)" />
                                     }
                                     @if (sugestProduto != null && sugestProduto.modoentrega != null)
-
                                     {
                                         <div>Modo de Entrega: @sugestProduto.modoentrega</div>
+                                    }else{
+                                        <div> Sem modo de Entrega </div>
                                     }
                                 </div>
                             </div>
@@ -152,10 +153,9 @@
 
                             <div class="row justify-content-md-around" style="height: 80px;">
                                 <div class="col-md-6 ">
-                                    @if (sugestProduto.Imagem.Length > 0)
-
+                                    @if (sugestProduto.UrlImagem != null)
                                     {
-                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="data:image/*;base64,@(Convert.ToBase64String(sugestProduto.Imagem))" />
+                                        <img style="height:80px" title="Imagem Actual: @sugestProduto.UrlImagem" src="data:image/*;base64,sugestProduto.Imagem)" />
                                     }
                                 </div>
                             </div>

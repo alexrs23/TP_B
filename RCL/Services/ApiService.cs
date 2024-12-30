@@ -67,8 +67,7 @@ public class ApiService : IApiServices
                 _logger.LogInformation($"GetCategorias: Response content: {content}"); // log
                 if (!string.IsNullOrWhiteSpace(content))
                 {
-                    //categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
-                    categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions) ?? new List<Categoria>();
+                    List<Categoria> categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
                     return categorias;
                 }
                 else

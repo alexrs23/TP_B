@@ -17,7 +17,7 @@ namespace APIRestFull.Entities
         public string? Detalhe { get; set; }
         [StringLength(200)]
 
-        public byte[]? UrlImagem { get; set; }
+        public string? UrlImagem { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
