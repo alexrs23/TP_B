@@ -8,7 +8,6 @@ namespace APIRestFull.Entities
         public string? Nome { get; set; }
         public int? Ordem { get; set; }
         public string? UrlImagem { get; set; }
-        public string? Imagem { get; set; }
 
         [NotMapped]
         public IFormFile? ImageFile { get; set; }

@@ -57,7 +57,7 @@
 
         try
         {
-             var response = await Http.PostAsync("https://xjjfwfbn-7260.uks1.devtunnels.ms/api/Acc/register", content);
+            var response = await Http.PostAsync(RCLAPI.AppConfig.BaseUrl + "/api/Acc/register", content);
 
             if (response.IsSuccessStatusCode)
              {

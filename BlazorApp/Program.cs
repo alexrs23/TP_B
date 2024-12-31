@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 // Register HttpClient for dependency injection
 builder.Services.AddScoped<HttpClient>(sp =>
-    new HttpClient { BaseAddress = new Uri("https://xjjfwfbn-7260.uks1.devtunnels.ms") });
+    new HttpClient { BaseAddress = new Uri(RCLAPI.AppConfig.BaseUrl) });
 
 // Register IApiServices
 builder.Services.AddScoped<IApiServices, ApiService>();
