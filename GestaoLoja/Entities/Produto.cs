@@ -29,12 +29,14 @@ public class Produto
     //navigation
     public int CategoriaId { get; set; }
     //public string CategoriaNome { get; set; }
-    public Categoria categoria { get; set; }
+    public Categoria Categoria { get; set; }
 
     [JsonIgnore]
     public int? ModoEntregaId { get; set; }
-    public ModoEntrega modoentrega { get; set; }
+    public ModoEntrega ModoEntrega { get; set; }
 
     [NotMapped]
     public IFormFile? ImageFile { get; set; }
+    public ICollection<ItemEncomenda> ItensEncomenda { get; set; }
+
 }

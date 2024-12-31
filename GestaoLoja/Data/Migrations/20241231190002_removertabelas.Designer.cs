@@ -4,6 +4,7 @@ using GestaoLoja.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestaoLoja.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241231190002_removertabelas")]
+    partial class removertabelas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,65 +137,6 @@ namespace GestaoLoja.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
-                });
-
-            modelBuilder.Entity("GestaoLoja.Entities.Encomenda", b =>
-                {
-                    b.Property<int>("EncomendaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EncomendaId"));
-
-                    b.Property<string>("ClienteId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DataEncomenda")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ModoEntregaId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("EncomendaId");
-
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("ModoEntregaId");
-
-                    b.ToTable("Encomendas");
-                });
-
-            modelBuilder.Entity("GestaoLoja.Entities.ItemEncomenda", b =>
-                {
-                    b.Property<int>("ItemEncomendaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemEncomendaId"));
-
-                    b.Property<int>("EncomendaId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PrecoUnitario")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemEncomendaId");
-
-                    b.HasIndex("EncomendaId");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("ItensEncomenda");
                 });
 
             modelBuilder.Entity("GestaoLoja.Entities.ModoEntrega", b =>
@@ -405,59 +349,21 @@ namespace GestaoLoja.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("GestaoLoja.Entities.Encomenda", b =>
-                {
-                    b.HasOne("GestaoLoja.Data.ApplicationUser", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestaoLoja.Entities.ModoEntrega", "ModoEntrega")
-                        .WithMany("Encomendas")
-                        .HasForeignKey("ModoEntregaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
-
-                    b.Navigation("ModoEntrega");
-                });
-
-            modelBuilder.Entity("GestaoLoja.Entities.ItemEncomenda", b =>
-                {
-                    b.HasOne("GestaoLoja.Entities.Encomenda", "Encomenda")
-                        .WithMany("ItensEncomenda")
-                        .HasForeignKey("EncomendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestaoLoja.Entities.Produto", "Produto")
-                        .WithMany("ItensEncomenda")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Encomenda");
-
-                    b.Navigation("Produto");
-                });
-
             modelBuilder.Entity("GestaoLoja.Entities.Produto", b =>
                 {
-                    b.HasOne("GestaoLoja.Entities.Categoria", "Categoria")
+                    b.HasOne("GestaoLoja.Entities.Categoria", "categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestaoLoja.Entities.ModoEntrega", "ModoEntrega")
-                        .WithMany("Produtos")
+                    b.HasOne("GestaoLoja.Entities.ModoEntrega", "modoentrega")
+                        .WithMany("produtos")
                         .HasForeignKey("ModoEntregaId");
 
-                    b.Navigation("Categoria");
+                    b.Navigation("categoria");
 
-                    b.Navigation("ModoEntrega");
+                    b.Navigation("modoentrega");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -511,21 +417,9 @@ namespace GestaoLoja.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GestaoLoja.Entities.Encomenda", b =>
-                {
-                    b.Navigation("ItensEncomenda");
-                });
-
             modelBuilder.Entity("GestaoLoja.Entities.ModoEntrega", b =>
                 {
-                    b.Navigation("Encomendas");
-
-                    b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("GestaoLoja.Entities.Produto", b =>
-                {
-                    b.Navigation("ItensEncomenda");
+                    b.Navigation("produtos");
                 });
 #pragma warning restore 612, 618
         }

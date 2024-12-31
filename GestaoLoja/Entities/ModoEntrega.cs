@@ -13,7 +13,9 @@ public class ModoEntrega
     public string? Detalhe { get; set; }
 
     [JsonIgnore]
-    public ICollection<Produto>? produtos { get; set; }
+    public ICollection<Produto>? Produtos { get; set; }
+    public ICollection<Encomenda>? Encomendas { get; set; }
+
 
 
 }
