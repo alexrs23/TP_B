@@ -1,71 +1,10 @@
 ﻿@page "/login"
-@inject HttpClient Http
-@inject NavigationManager NavigationManager
 
-<h1>Página de Login</h1>
+@using RCLAPI.Services
+@using RCLAPI.Shared
+@using RCLAPI.DTO
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <form @onsubmit="HandleLogin">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" @bind="username" />
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" @bind="password" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                    @if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<PagLogin />
 
 
-@code {
-    private string username = "";
-    private string password = "";
-    private string errorMessage = "";
 
-
-    private async Task HandleLogin()
-    {
-        errorMessage = ""; // Reset do erro
-        var loginData = new { username = username, password = password };
-        var json = System.Text.Json.JsonSerializer.Serialize(loginData);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        try
-        {
-            var response = await Http.PostAsync(RCLAPI.AppConfig.BaseUrl + "api/Acc/login", content);
-            Console.WriteLine($"Login Response: {response.StatusCode}");
-            var responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Login Content: {responseContent}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Login bem-sucedido. Navegar para outra página (por exemplo, a página principal)
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                errorMessage = "Falha ao fazer o login. Verifica as tuas credenciais.";
-                StateHasChanged();
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Erro ao tentar fazer login: {ex.Message}";
-            Console.WriteLine($"Erro: {ex.Message}");
-            StateHasChanged();
-        }
-    }
-}

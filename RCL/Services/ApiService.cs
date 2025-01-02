@@ -250,17 +250,16 @@ public class ApiService : IApiServices
 
     // ****************** Utilizadores ********************
 
-    public async Task<ApiResponse<bool>> RegistarUtilizador(string nome, string apelido, string email,
-                                                          string password, long? nif)
+    public async Task<ApiResponse<bool>> RegistarUtilizador(string usarname, string email,
+                                                          string password, string telemovel)
     {
         try
         {
-            var newuser = new Utilizador()
+            var newuser = new Register()
             {
-                Nome = nome,
-                Apelido = apelido,
-                EMail = email,
-                NIF = nif,
+                Username= usarname,
+                Email = email,
+                Telefone = telemovel,
                 Password = password
             };
 
@@ -268,7 +267,7 @@ public class ApiService : IApiServices
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await PostRequest("identity/register", content);
+            var response = await PostRequest("api/Acc/register", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -326,6 +325,7 @@ public class ApiService : IApiServices
     private async Task<HttpResponseMessage> PostRequest(string uri, HttpContent content)
     {
         var enderecoURL = AppConfig.BaseUrl + uri;
+        
         try
         {
             var result = await _httpClient.PostAsync(enderecoURL, content);

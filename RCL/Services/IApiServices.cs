@@ -11,6 +11,6 @@ public interface IApiServices
     public Task<List<Categoria>> GetCategorias();
     public Task<(bool Data, string? ErrorMessage)> ActualizaFavorito(string acao, int produtoId);
     public Task<List<ProdutoFavorito>> GetFavoritos(string utilizadorId);
-    public Task<ApiResponse<bool>> RegistarUtilizador(string nome, string apelido, string email,string password, long? nif);
+    public Task<ApiResponse<bool>> RegistarUtilizador(string username, string email,string password, string telemovel);
     public Task<ApiResponse<bool>> Login(string email, string password);
 }

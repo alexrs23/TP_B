@@ -8,6 +8,6 @@ public class Categoria
     public string Nome { get; set; }
     public int Ordem { get; set; }
     public string UrlImagem { get; set; }
-    public string? Imagem { get; set; } // Alterado para string
+    public string? Imagem { get; set; } 
     public string? ImageFile { get; set; }
 }

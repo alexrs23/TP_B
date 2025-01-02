@@ -1,8 +1,7 @@
 using BlazorApp.Components;
 using RCLAPI.Services;
 using Microsoft.AspNetCore.Components.Web;
-using RCLProdutos.Services.Interfaces; // Adiciona o namespace correto
-
+using RCLProdutos.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +19,7 @@ builder.Services.AddScoped<IApiServices, ApiService>();
 builder.Services.AddScoped<ICardsUtilsServices, RCLProdutos.Services.CardsUtilsServices>();
 
 // Register ISliderUtilsServices
-builder.Services.AddScoped<ISliderUtilsServices, RCLProdutos.Services.SliderUtilsServices>(); 
+builder.Services.AddScoped<ISliderUtilsServices, RCLProdutos.Services.SliderUtilsServices>();
 
 var app = builder.Build();
 

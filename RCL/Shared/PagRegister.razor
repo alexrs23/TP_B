@@ -1,0 +1,53 @@
+﻿<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <form @onsubmit="RegisterUser" @onsubmit:preventDefault>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" @bind="Username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" @bind="Email" />
+                            </div>
+                            <div class="form-group">
+                                <label for="tel">Nº Telemovel</label>
+                                <input type="text" class="form-control" id="tel" @bind="Tel" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" @bind="Password" />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Registar</button>
+                            @if (!string.IsNullOrEmpty(ErrorMessage))
+
+
+
+                            {
+                                <div class="alert alert-danger">@ErrorMessage</div>
+                            }
+                            @if (IsSuccess)
+
+
+
+                            {
+                                <div class="alert alert-success">Registo efetuado com sucesso!</div>
+                            }
+                            @if (IsLoading)
+
+
+
+                            {
+                                <p>A carregar...</p>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
