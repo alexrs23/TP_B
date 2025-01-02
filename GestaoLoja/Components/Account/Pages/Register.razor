@@ -1,5 +1,6 @@
 ﻿@page "/Account/Register"
 
+
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
@@ -20,10 +21,7 @@
 <h1>Register</h1>
 
 <div class="row">
-    <!--
     <div class="col-md-4">
-        -->
-    <div class="col-lg-6 mx-auto rounded border p-3">
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
@@ -48,11 +46,16 @@
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
     </div>
-    
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to register.</h3>
+            <hr />
+            <ExternalLoginPicker />
+        </section>
+    </div>
 </div>
 
 @code {
-    
     private IEnumerable<IdentityError>? identityErrors;
 
     [SupplyParameterFromForm]
@@ -79,6 +82,14 @@
         }
 
         Logger.LogInformation("User created a new account with password.");
+
+        // Adiciona a role "Anonimo" ao usuário
+        var roleResult = await UserManager.AddToRoleAsync(user, "Anonimo");
+        if (!roleResult.Succeeded)
+        {
+            identityErrors = roleResult.Errors;
+            return;
+        }
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);

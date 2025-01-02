@@ -1,75 +1,64 @@
 ﻿@page "/utilizadores/assign"
 @using GestaoLoja.Data
-@using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Identity
-@inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
-@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
+@inject NavigationManager NavigationManager
+@inject ILogger<Assign> Logger
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Detalhes do Utilizador</PageTitle>
+<h3>Atribuir Roles aos Usuários</h3>
 
-<h3>Detalhes</h3>
-
-@if (user != null)
+@if (users == null || roles == null)
 
 {
-    <div>
-        <dl class="row">
-            <dt class="col-sm-2">Nome</dt>
-            <dd class="col-sm-10">@user.Nome</dd>
-            <dt class="col-sm-2">Apelido</dt>
-            <dd class="col-sm-10">@user.Apelido</dd>
-            <dt class="col-sm-2">Email</dt>
-            <dd class="col-sm-10">@user.Email</dd>
-            <dt class="col-sm-2">UserName</dt>
-            <dd class="col-sm-10">@user.UserName</dd>
-            <dt class="col-sm-2">PhoneNumber</dt>
-            <dd class="col-sm-10">@user.PhoneNumber</dd>
-        </dl>
-    </div>
-
-    <div>
-        <h4>Atribuir Roles</h4>
-        <EditForm method="post" Model="user" OnValidSubmit="AssignRole" FormName="assign" Enhance>
-            <div class="form-group">
-                <label for="roles">Roles</label>
-                <InputSelect id="roles" @bind-Value="selectedRole">
-                    @foreach (var role in roles)
-
-                    {
-                        <option value="@role">@role</option>
-                    }
-                </InputSelect>
-            </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
-        </EditForm>
-    </div>
-
-    <div>
-        <a href="/utilizadores" class="btn btn-secondary">Back to List</a>
-    </div>
+    <p>Carregando...</p>
 }
 
 else
 
 {
-    <p>Utilizador não encontrado.</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Role</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <select @onchange="(e) => OnRoleChange(user, e.Value?.ToString() ?? string.Empty)">
+                            <option value="">Selecione uma role</option>
+                            @foreach (var role in roles)
+                            {
+                                <option value="@role.Name" selected="@(userRoles.ContainsKey(user.Id) && userRoles[user.Id] == role.Name ? "selected" : null)">
+                                    @role.Name
+                                </option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => AssignRole(user)">Atribuir Role</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {
-    private ApplicationUser? user;
+    private List<ApplicationUser> users = new();
 
-    private List<string?> roles = new();
+    private List<IdentityRole> roles = new();
 
-    private string selectedRole = string.Empty;
-
-
-
-    [SupplyParameterFromQuery]
-
-    private string Id { get; set; }
+    private Dictionary<string, string> userRoles = new();
 
 
 
@@ -77,17 +66,81 @@ else
 
     {
 
-        using var context = DbFactory.CreateDbContext();
+        users = UserManager.Users.ToList();
 
-        user = await context.Users.FirstOrDefaultAsync(m => m.Id == Id);
+        roles = RoleManager.Roles.ToList();
 
 
 
-        if (user == null)
+        foreach (var user in users)
 
         {
 
-            Navigation.NavigateTo("notfound");
+            var userRole = await UserManager.GetRolesAsync(user);
+
+            if (userRole.Any())
+
+            {
+
+                userRoles[user.Id] = userRole.First();
+
+            }
+
+        }
+
+    }
+
+
+
+    private void OnRoleChange(ApplicationUser user, string role)
+
+    {
+
+        if (userRoles.ContainsKey(user.Id))
+
+        {
+
+            userRoles[user.Id] = role;
+
+        }
+
+        else
+
+        {
+
+            userRoles.Add(user.Id, role);
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private async Task AssignRole(ApplicationUser user)
+
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var currentUser = await UserManager.GetUserAsync(authState.User);
+
+        if (currentUser == null || !await UserManager.IsInRoleAsync(currentUser, "Admin"))
+
+        {
+
+            NavigationManager.NavigateTo("/Account/AccessDenied");
 
             return;
 
@@ -95,87 +148,93 @@ else
 
 
 
-        roles = await RoleManager.Roles.Select(r => r.Name).ToListAsync();
-
-    }
-
-
-
-    private async Task AssignRole()
-
-    {
-
-        if (user != null && !string.IsNullOrEmpty(selectedRole))
+        if (userRoles.TryGetValue(user.Id, out var roleName))
 
         {
 
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-
-            var currentUser = await UserManager.GetUserAsync(authState.User);
+            Logger.LogInformation($"Iniciando atribuição de role para o usuário {user.UserName}.");
 
 
 
-            if (currentUser != null)
+            // Remover roles existentes
+
+            var currentRoles = await UserManager.GetRolesAsync(user);
+
+            var removeResult = await UserManager.RemoveFromRolesAsync(user, currentRoles);
+
+            if (!removeResult.Succeeded)
 
             {
 
-                /*var result = await UserManagementService.AssignRoleAsync(user, selectedRole, currentUser);
+                var errors = string.Join(", ", removeResult.Errors.Select(e => e.Description));
 
-                if (result)
+                Logger.LogError($"Erro ao remover roles: {errors}");
+                Console.WriteLine($"Erro ao remover roles: {errors}");
+
+                return;
+
+            }
+
+            Logger.LogInformation($"Roles removidas com sucesso para o usuário {user.UserName}.");
+
+
+
+            // Adicionar nova role, se aplicável
+
+            if (!string.IsNullOrEmpty(roleName))
+
+            {
+
+                var role = await RoleManager.FindByNameAsync(roleName);
+
+                if (role == null)
 
                 {
 
-                    // Role assigned successfully
+                    Logger.LogError($"Role '{roleName}' não existe.");
+                    Console.WriteLine($"Role '{roleName}' não existe.");
 
-                    Navigation.NavigateTo($"/utilizadores");
+                    return;
 
                 }
 
-                else
+
+
+                var roleId = role.Id;
+
+
+
+                var addResult = await UserManager.AddToRoleAsync(user, roleName);
+
+                if (!addResult.Succeeded)
 
                 {
 
-                    // Handle errors
+                    var errors = string.Join(", ", addResult.Errors.Select(e => e.Description));
 
-                    Console.WriteLine("Falha ao atribuir role.");
+                    Logger.LogError($"Erro ao adicionar a role: {errors}");
+                    Console.WriteLine($"Erro ao adicionar a role: {errors}");
 
-                }*/
+                    return;
+
+                }
+
+                Logger.LogInformation($"Role '{roleName}' (ID: {roleId}) atribuída com sucesso ao usuário {user.UserName}.");
 
             }
 
         }
 
-    }
 
 
+        // Atualizar usuário após alterações
 
-    private async Task CheckUserRole()
+        await UserManager.UpdateAsync(user);
 
-    {
-
-        if (user != null)
-
-        {
-
-            /*bool hasRole = await UserManagementService.UserHasRoleAsync(user, "RoleName");
-
-            if (hasRole)
-
-            {
-
-                Console.WriteLine("O usuário possui a role especificada.");
-
-            }
-
-            else
-
-            {
-
-                Console.WriteLine("O usuário não possui a role especificada.");
-
-            }
-            */
-        }
+        Logger.LogInformation($"Atribuição de roles concluída para o usuário {user.UserName}.");
+        Console.WriteLine($"Atribuição de roles concluída para o usuário {user.UserName}.");
 
     }
+
+
 }
