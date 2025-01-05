@@ -8,7 +8,7 @@ using RCLAPI.DTO;
 using System.Net.Http.Json;
 
 namespace RCLAPI.Services;
-public class ApiService : IApiServices
+public class ApiServices : IApiServices
 {
     private readonly ILogger<ApiService> _logger;
     private readonly HttpClient _httpClient = new();
@@ -19,7 +19,7 @@ public class ApiService : IApiServices
     private List<Categoria>? categorias;
 
     private ProdutoDTO? _detalhesProduto;
-    public ApiService(ILogger<ApiService> logger)
+    public ApiServices(ILogger<ApiService> logger)
     {
         _logger = logger;
         _serializerOptions = new JsonSerializerOptions

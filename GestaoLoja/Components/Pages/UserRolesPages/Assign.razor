@@ -22,11 +22,14 @@
 }
 else
 {
+	<button class="btn btn-outline-primary" @onclick="() => SortByEmail()">
+		Ordenar
+	</button>
 	<table class="table">
 		<thead>
 			<tr>
 				<th>Email</th>
-				<th>Usuário</th>
+				<th>Username</th>
 				<th>Role Atual</th>
 				<th>Nova Role</th>
 				<th>Ação</th>
@@ -68,7 +71,7 @@ else
 	private List<IdentityRole>? roles;
 	private Dictionary<string, string> userRoles = new();
 	private string? currentUserId;
-
+	private bool isAscending = true;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -91,7 +94,18 @@ else
 		Console.WriteLine("Usuários e roles carregados com sucesso.");
 	}
 
-
+	private void SortByEmail()
+	{
+		if (isAscending)
+		{
+			users = users.OrderBy(u => u.Email).ToList();
+		}
+		else
+		{
+			users = users.OrderByDescending(u => u.Email).ToList();
+		}
+		isAscending = !isAscending;
+	}
 
 	private async Task UpdateRole(string userId)
 	{
@@ -109,7 +123,6 @@ else
 			Console.WriteLine($"Usuário com ID '{userId}' não encontrado.");
 			return;
 		}
-
 
 		// Remover roles existentes
 		var currentRoles = await UserManager.GetRolesAsync(user);
@@ -135,13 +148,20 @@ else
 				return;
 			}
 		}
-		
-		NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad:true);
 
+		NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
 	}
 
 	private async Task RemoveUser(string userId)
 	{
+		// Verifica se o utilizador a ser removido é o utilizador autenticado
+		if (userId == currentUserId)
+		{
+			Logger.LogError("Não é possível remover o usuário com sessão iniciada.");
+			Console.WriteLine("Não é possível remover o usuário com sessão iniciada.");
+			return;
+		}
+
 		var user = await UserManager.FindByIdAsync(userId);
 		if (user == null)
 		{

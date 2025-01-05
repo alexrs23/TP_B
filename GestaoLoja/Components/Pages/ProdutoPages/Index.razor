@@ -7,6 +7,8 @@
 
 @attribute [Authorize(Roles = "Admin, Gestor")]
 
+@rendermode InteractiveServer
+
 @implements IAsyncDisposable
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
 
@@ -18,7 +20,21 @@
     <a href="produtos/create">Criar Novo</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Produtos">
+<div>
+    <label for="categoria">Categoria:</label>
+    <select id="categoria" @bind="selectedCategoria">
+        <option value="">Todas</option>
+        @foreach (var categoria in categorias)
+        {
+            <option value="@categoria">@categoria</option>
+        }
+    </select>
+
+    <label for="disponibilidade">Disponível:</label>
+    <input type="checkbox" id="disponibilidade" @bind="disponivel"/>
+</div>
+
+<QuickGrid TGridItem="Produto" Class="table" Items="paginatedProdutos.AsQueryable()">
     <TemplateColumn Context="produto">
         <img src="/img/@produto.UrlImagem" alt="Imagem do Produto" style="max-width: 100px; max-height: 100px;" />
     </TemplateColumn>
@@ -28,7 +44,7 @@
     <PropertyColumn Property="produto => produto.EmStock" />
     <PropertyColumn Property="produto => produto.Disponivel" />
     <PropertyColumn Property="produto => produto.Origem" />
-        <!--
+    <!--
     <PropertyColumn Property="produto => produto.CategoriaNome" />
     -->
 
@@ -39,13 +55,63 @@
     </TemplateColumn>
 </QuickGrid>
 
+<div>
+    <button @onclick="PreviousPage" disabled="@(!CanGoToPreviousPage)">Anterior</button>
+    <span>Página @currentPage de @totalPages</span>
+    <button @onclick="NextPage" disabled="@(!CanGoToNextPage)">Próxima</button>
+</div>
+
 @code {
     private ApplicationDbContext context = default!;
+    private List<Produto> produtos = new();
+    private List<string> categorias = new();
+    private string selectedCategoria = string.Empty;
+    private bool disponivel = false;
 
-    protected override void OnInitialized()
+    private int currentPage = 1;
+    private int pageSize = 4; // Alterado de 10 para 5
+    private int totalPages => (int)Math.Ceiling((double)filteredProdutos.Count() / pageSize);
+
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        produtos = await context.Produtos.ToListAsync();
+        categorias = produtos.Select(p => p.CategoriaId.ToString()).Distinct().ToList();
     }
+
+    private void OnFilterChanged(ChangeEventArgs e)
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
+
+    private IEnumerable<Produto> filteredProdutos => produtos
+    .Where(p => (string.IsNullOrEmpty(selectedCategoria) || p.CategoriaId == int.Parse(selectedCategoria)) && (!disponivel || p.Disponivel));
+
+    private IEnumerable<Produto> paginatedProdutos => filteredProdutos
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize);
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            StateHasChanged();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            StateHasChanged();
+        }
+    }
+
+    private bool CanGoToPreviousPage => currentPage > 1;
+    private bool CanGoToNextPage => currentPage < totalPages;
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
