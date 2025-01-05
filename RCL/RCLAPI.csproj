@@ -21,4 +21,10 @@
     <ProjectReference Include="..\APIRestFull\APIRestFull.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Shared\PagCarrinho.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

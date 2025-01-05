@@ -68,4 +68,30 @@ public class ProdutoRepository : IProdutoRepository
 
         return detalheProduto;
     }
+    public async Task<IEnumerable<Produto>?> GetProdutosEspecificos(string? especifico, int? idCat)
+    {
+        IQueryable<Produto> query = dbContext.Produtos
+           .Include(x => x.modoentrega)
+            .Include(x => x.categoria);
+
+
+        if (especifico == "todos" || especifico == null)
+        {
+            return await query
+                   .Where(x => x.UrlImagem.Length > 0)
+                   .OrderBy(x => x.categoria.Ordem)
+                   .ThenBy(x => x.Nome)
+                   .ToListAsync();
+        }
+        if (especifico == "categoria" && idCat != null)
+        {
+            return await query
+                 .Where(x => x.UrlImagem.Length > 0 && x.CategoriaId == idCat)
+                .OrderBy(x => x.categoria.Ordem)
+                  .ThenBy(x => x.Nome)
+                .ToListAsync();
+        }
+
+        return null;
+    }
 }

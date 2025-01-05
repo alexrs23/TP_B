@@ -1,5 +1,4 @@
-﻿
-<section class="carousel-cards">
+﻿<section class="carousel-cards">
     <div class="cards-container">
         <button @onclick="PreviousCard" disabled="@IsDisbledPrevious" class="btn-cards-left"><img src="images/back.png" /></button>
         @if (categorias == null)
@@ -9,7 +8,6 @@
         else
         {
             @foreach (var categoria in categorias)
-
             {
                 <CardComponent categoria="@categoria" selectedCatId="@SelectCategoria" marginLeft="@(cardsUtilsServices.MarginLeftSlide[categorias.IndexOf(categoria)])" />
             }

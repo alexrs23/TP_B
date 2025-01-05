@@ -72,5 +72,15 @@ namespace APIRestFull.Controllers
             }
             return Ok(produto);
         }
+
+
+        [HttpGet("especificos")]
+        public async Task<ActionResult<IEnumerable<Produto>>> GetProdutosEspecificos(string? especifico, int? idCat)
+        {
+            var produtos = await _produtoRepository.GetProdutosEspecificos(especifico, idCat);
+            if (produtos is null)
+                return NotFound();
+            return Ok(produtos);
+        }
     }
 }

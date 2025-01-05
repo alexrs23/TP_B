@@ -4,8 +4,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Xamarin.Essentials;
-
 using RCLAPI.DTO;
+using System.Net.Http.Json;
 
 namespace RCLAPI.Services;
 public class ApiService : IApiServices
@@ -14,11 +14,11 @@ public class ApiService : IApiServices
     private readonly HttpClient _httpClient = new();
     JsonSerializerOptions _serializerOptions;
 
-    private List<ProdutoDTO> produtos;
+    private List<ProdutoDTO>? produtos;
 
-    private List<Categoria> categorias;
+    private List<Categoria>? categorias;
 
-    private ProdutoDTO _detalhesProduto;
+    private ProdutoDTO? _detalhesProduto;
     public ApiService(ILogger<ApiService> logger)
     {
         _logger = logger;
@@ -67,7 +67,7 @@ public class ApiService : IApiServices
                 _logger.LogInformation($"GetCategorias: Response content: {content}"); // log
                 if (!string.IsNullOrWhiteSpace(content))
                 {
-                    List<Categoria> categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
+                    List<Categoria>? categorias = JsonSerializer.Deserialize<List<Categoria>>(content, _serializerOptions)!;
                     return categorias;
                 }
                 else
@@ -85,35 +85,39 @@ public class ApiService : IApiServices
             return HandleException<List<Categoria>>(ex);
         }
     }
-    private async Task<T?> HandleErrorResponse<T>(HttpResponseMessage response) where T : class
+    private async Task<T?> HandleErrorResponse<T>(HttpResponseMessage? response) where T : class
     {
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        if (response != null && response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             string errorMessage = "Unauthorized";
             _logger.LogWarning(errorMessage);
             return null;
         }
-        string generalErrorMessage = $"Erro na requisição: {response.ReasonPhrase}";
-        _logger.LogError(generalErrorMessage);
+        if (response != null)
+        {
+            string generalErrorMessage = $"Erro na requisição: {response.ReasonPhrase}";
+            _logger.LogError(generalErrorMessage);
+            return null;
+        }
         return null;
 
     }
 
-    private T? HandleException<T>(Exception ex, string? customMessage = null) where T : class
+    private T? HandleException<T>(Exception ex)
     {
-        string errorMessage = customMessage ?? $"Erro inesperado: {ex.Message}";
-        _logger.LogError(errorMessage);
-        return null;
+        _logger.LogError($"API exception: {ex.Message}");
+        return default(T);
     }
+
 
     // ********************* Produtos  **********
-    public async Task<(List<ProdutoDTO>?Produtos, string? ErrorMessage)> GetProdutos(string tipoProduto, string categoriaId)
+    public async Task<(List<ProdutoDTO>? Produtos, string? ErrorMessage)> GetProdutos(string tipoProduto, string categoriaId)
     {
         string endpoint = $"api/Produtos?tipoProduto={tipoProduto}&categoriaId={categoriaId}";
         return await GetAsync<List<ProdutoDTO>>(endpoint);
     }
 
-    public async Task<List<ProdutoDTO>> GetProdutosEspecificos(string produtoTipo, int? IdCategoria)
+    public async Task<List<ProdutoDTO>?> GetProdutosEspecificos(string produtoTipo, int? IdCategoria)
     {
 
         string endpoint = $"/";
@@ -143,6 +147,7 @@ public class ApiService : IApiServices
         {
             endpoint = $"api/Produtos?tipoProduto=populares";
         }
+
         else
         {
             return null;
@@ -157,10 +162,10 @@ public class ApiService : IApiServices
                 string content = "";
 
                 content = await httpResponseMessage.Content.ReadAsStringAsync();
-                produtos = JsonSerializer.Deserialize<List<ProdutoDTO>>(content, _serializerOptions)!;  
-               
+                produtos = JsonSerializer.Deserialize<List<ProdutoDTO>>(content, _serializerOptions)!;
+                return produtos;
             }
-
+            return null;
         }
         catch (Exception ex)
         {
@@ -169,12 +174,11 @@ public class ApiService : IApiServices
             return null;
         }
 
-        return produtos;
     }
 
-    public async Task<ProdutoDTO> GetDetalheProduto(int IdProduto)
+    public async Task<ProdutoDTO?> GetDetalheProduto(int IdProduto)
     {
-        string endpoint = $"api/Produtos/{IdProduto}";
+        string endpoint = $"api/Produtos/DetalheProduto/{IdProduto}";
 
         string caminho = $"{AppConfig.BaseUrl}{endpoint}";
 
@@ -200,7 +204,7 @@ public class ApiService : IApiServices
             return null;
         }
     }
-    public async Task<(T?Data, string?ErrorMessage)>GetAsync<T>(string endpoint)
+    public async Task<(T? Data, string? ErrorMessage)> GetAsync<T>(string endpoint)
     {
         try
         {
@@ -257,7 +261,7 @@ public class ApiService : IApiServices
         {
             var newuser = new Register()
             {
-                Username= usarname,
+                Username = usarname,
                 Email = email,
                 Telefone = telemovel,
                 Password = password
@@ -325,10 +329,12 @@ public class ApiService : IApiServices
     private async Task<HttpResponseMessage> PostRequest(string uri, HttpContent content)
     {
         var enderecoURL = AppConfig.BaseUrl + uri;
-        
+
         try
         {
             var result = await _httpClient.PostAsync(enderecoURL, content);
+            if (!result.IsSuccessStatusCode)
+                Console.WriteLine(await result.Content.ReadAsStringAsync());
             return result;
         }
         catch (Exception ex)
@@ -364,77 +370,108 @@ public class ApiService : IApiServices
         {
             _logger.LogError($"Erro ao fazer o upload da imagem do utilizador: {ex.Message}");
 
-            return new ApiResponse<bool> {ErrorMessage= ex.Message};
+            return new ApiResponse<bool> { ErrorMessage = ex.Message };
         }
     }
 
     // *************** Gerir Favoritos ******************
 
-    public async Task<List<ProdutoFavorito>> GetFavoritos(string utilizadorId)
+    public async Task<List<ProdutoFavorito>?> GetFavoritos(string username)
     {
-        string endpoint = $"api/Favoritos/{utilizadorId}";
+        string endpoint = $"api/User/GetFavoritos/{username}";
+        try
+        {
+            var response = await _httpClient.GetAsync(AppConfig.BaseUrl + endpoint);
 
-        HttpResponseMessage response = await _httpClient.GetAsync($"{AppConfig.BaseUrl}{endpoint}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    List<ProdutoFavorito>? produtosFavoritos = JsonSerializer.Deserialize<List<ProdutoFavorito>>(content, _serializerOptions);
+                    return produtosFavoritos;
+                }
+            }
+            _logger.LogWarning($"GetFavoritos: API retornou content vazio.");
+            return null;
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        List<ProdutoFavorito> data = JsonSerializer.Deserialize<List<ProdutoFavorito>>(responseString, _serializerOptions);
-
-        return data;
-
+        }
+        catch (Exception ex)
+        {
+            return HandleException<List<ProdutoFavorito>>(ex);
+        }
     }
 
     public async Task<(bool Data, string? ErrorMessage)> ActualizaFavorito(string acao, int produtoId)
     {
+        string endpoint = $"api/User/ActualizaFavorito/{acao}/{produtoId}";
         try
         {
-            var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(AppConfig.BaseUrl + endpoint, null);
+            return (response.IsSuccessStatusCode, null);
 
-            var response = await FavoritosPutRequest($"api/Favoritos/{produtoId}/{acao}", content );
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return (true, null);
-            }
-            else
-            {
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    string errorMessage = "Unauthorized";
-                    _logger.LogWarning(errorMessage);
-                    return (false, errorMessage);
-                }
-                string generalErrorMessage = $"Erro na requisição: {response.ReasonPhrase}";
-                _logger.LogError(generalErrorMessage);
-                return (false, generalErrorMessage);
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            string errorMessage = $"Erro de requisição HTTP: {ex.Message}";
-            _logger.LogError(errorMessage);
-            return (false, errorMessage);
         }
         catch (Exception ex)
         {
-            string errorMessage = $"Erro inesperado: {ex.Message}";
-            _logger.LogError(errorMessage);
-            return (false, errorMessage);
+            HandleException<bool>(ex);
+            return (false, ex.Message);
         }
     }
 
-    private async Task<HttpResponseMessage> FavoritosPutRequest(string uri, HttpContent content)
+    public async Task<List<ItemCarrinhoCompra>?> GetItensDoCarrinho(string clienteId)
     {
-        var enderecoUrl = AppConfig.BaseUrl + uri;
         try
         {
-          //  AddAuthorizationHeader();
-            var result = await _httpClient.PutAsync(enderecoUrl, content);
-            return result;
+            var response = await _httpClient.GetAsync(AppConfig.BaseUrl + $"api/CarrinhoCompra/GetCarrinhoByCliente/{clienteId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    List<ItemCarrinhoCompra>? lista = JsonSerializer.Deserialize<List<ItemCarrinhoCompra>>(content, _serializerOptions);
+                    return lista;
+                }
+                return null;
+            }
+            return null;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Erro ao enviar requisição PUT para {uri}: {ex.Message}");
-            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            return HandleException<List<ItemCarrinhoCompra>>(ex);
+        }
+    }
+
+    public async Task<bool> RemoveItemDoCarrinho(int itemCarrinhoId)
+    {
+        string endpoint = $"api/CarrinhoCompra/DeleteItem/{itemCarrinhoId}";
+        try
+        {
+            var response = await _httpClient.DeleteAsync(AppConfig.BaseUrl + endpoint);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"API exception: {ex.Message}"); // Regista o log.
+            throw; // lança a exceção de novo para que ela possa ser tratada em um nivel superior.
+        }
+    }
+
+    public async Task<bool> AdicionaItemNoCarrinho(ItemCarrinhoCompra itemCarrinho)
+    {
+        var json = JsonSerializer.Serialize(itemCarrinho, _serializerOptions);
+
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await PostRequest("api/CarrinhoCompra/AddItem", content);
+            Console.WriteLine(response);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"API exception: {ex.Message}"); // Regista o log.
+            throw; // lança a exceção de novo para que ela possa ser tratada em um nivel superior.
         }
     }
 }

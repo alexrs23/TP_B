@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using RCLAPI.DTO;
 using RCLAPI.Services;
 using RCLProdutos.Services.Interfaces;
@@ -49,7 +48,7 @@ namespace RCLProdutos.Shared.Slider
                 categoriasenviadaID = Id;
                 produtosEspecificos = "categoria";
             }
-            else 
+            else
             {
                 if (Id > 0)
                 {
@@ -57,7 +56,6 @@ namespace RCLProdutos.Shared.Slider
                     actualProd = Id;
                     produtosEspecificos = "categoria";
                 }
-
                 else
                 {
                     categoriasenviadaID = actualProd;
@@ -72,17 +70,21 @@ namespace RCLProdutos.Shared.Slider
 
                 userFavoritos = await _apiServices!.GetFavoritos("Jorge");
 
-                for (int i = 0; i < userFavoritos.Count; i++)
-                    for (int j = 0; j < produtos.Count; j++)
-                        if (produtos[j].Id == userFavoritos[i].ProdutoId)
-                            produtos[j].Favorito = userFavoritos[i].Efavorito;
+                if (userFavoritos != null) // verificação do valor null
+                {
+                    for (int i = 0; i < userFavoritos.Count; i++)
+                        for (int j = 0; j < produtos?.Count; j++) // verificação do valor null
+                            if (produtos[j].Id == userFavoritos[i].ProdutoId)
+                                produtos[j].Favorito = userFavoritos[i].Efavorito;
+
+                }
 
                 Random random = new Random();
 
                 int[]? indices = produtos
-                                       .Where(item => item is not null)
-                                       .Select(item => item.Id)
-                                       .ToArray();
+                                    .Where(item => item is not null)
+                                    .Select(item => item.Id)
+                                    .ToArray();
 
                 int sugestaoProdutoId = random.Next(0, produtos.Count - 1);
 
@@ -93,18 +95,18 @@ namespace RCLProdutos.Shared.Slider
                 Console.WriteLine(ex.Message);
             }
 
-                await LoadMarginsLeft();
-                if(produtos != null)
-                {
-                    int qtdProd = produtos.Count;
+            await LoadMarginsLeft();
+            if (produtos != null)
+            {
+                int qtdProd = produtos.Count;
 
-                    witdthPerc = qtdProd * 100;
+                witdthPerc = qtdProd * 100;
 
-                    sliderUtilsService.WidthSlide2 = 100f / qtdProd;
+                sliderUtilsService.WidthSlide2 = 100f / qtdProd;
 
-                    sliderUtilsService.OnChange += StateHasChanged;
-                }
-                
+                sliderUtilsService.OnChange += StateHasChanged;
+            }
+
         }
 
         async Task LoadMarginsLeft()

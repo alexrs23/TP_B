@@ -1,6 +1,4 @@
-﻿@page "/slide"
-
-@using RCLProdutos.Shared.CardProduto
+﻿@using RCLProdutos.Shared.CardProduto
 
 <div class="prod-container">
     <div class="slide-descr">
@@ -9,7 +7,7 @@
             {              
                 <p class="font-valor1">
 
-                    <img title="Imagem Actual: @sugestProduto.Nome" style="height:60px" id="imagePreview" src="/images/@sugestProduto.UrlImagem;)" />
+                    <img title="Imagem Actual: @sugestProduto.Nome" style="height:60px" id="imagePreview" src="images/@sugestProduto.UrlImagem" />
 
                     A nossa sugestão <span class="font-valor2">@sugestProduto.Nome @sugestProduto.Preco  €/@sugestProduto.modoentrega.Nome</span>
                 </p>

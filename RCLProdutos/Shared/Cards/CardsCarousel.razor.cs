@@ -7,7 +7,7 @@ namespace RCLProdutos.Shared.Cards
 {
     public partial class CardsCarousel : ComponentBase
     {
-       
+
 
         [Parameter]
         public int SelectedId { get; set; }
@@ -32,58 +32,70 @@ namespace RCLProdutos.Shared.Cards
 
         protected override async Task OnInitializedAsync()
         {
-            enviaCat = catSel;
-
-            catSel = 0;
-
-            SelectCategoria = SelectedId;
-
-            categorias = await _apiServices.GetCategorias();
-
-            // Verificar se as categorias foram carregadas corretamente
-            if (categorias == null || !categorias.Any())
+            Console.WriteLine("Antes de carregar as categorias");
+            try
             {
-                Console.WriteLine("Nenhuma categoria carregada.");
+                enviaCat = catSel;
+
+                catSel = 0;
+
+                SelectCategoria = SelectedId;
+
+                categorias = await _apiServices.GetCategorias();
+
+                Console.WriteLine("Depois de carregar as categorias");
+
+                // Verificar se as categorias foram carregadas corretamente
+                if (categorias == null)
+                {
+                    Console.WriteLine("Nenhuma categoria carregada. Lista Null.");
+                }
+                else if (!categorias.Any())
+                {
+                    Console.WriteLine("Nenhuma categoria carregada. Lista Vazia.");
+                }
+                else
+                {
+                    Console.WriteLine($"categorias: {categorias.Count}");
+                }
+                await LoadMarginsLeft();
+                if (categorias != null)
+                {
+                    int qtdProd = categorias.Count;
+                    cardsUtilsServices.OnChange += StateHasChanged;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Categorias carregadas: {categorias.Count}");
+                Console.WriteLine("Erro ao inicializar o componente CardsCarousel: " + ex.Message);
+
             }
-
-            await LoadMarginsLeft();
-            if(categorias != null)
-            {
-                int qtdProd = categorias.Count;
-                cardsUtilsServices.OnChange += StateHasChanged;
-            }
-
-        }
-
-        private async Task<List<Categoria>> LoadCategoriasAsync()
-        {
-            // Simulação de carregamento de dados
-            await Task.Delay(1000); // Simula um atraso na resposta
-            return new List<Categoria>
-        {
-            new Categoria { Id = 1, Nome = "Categoria 1" },
-            new Categoria { Id = 2, Nome = "Categoria 2" }
-        };
         }
 
         async Task LoadMarginsLeft()
         {
-            if (categorias != null)
+            try
             {
-                foreach (var categoria in categorias)
+                if (categorias != null)
                 {
-                    cardsUtilsServices.MarginLeftSlide.Add("margin-left:0%");
+                    foreach (var categoria in categorias)
+                    {
+                        cardsUtilsServices.MarginLeftSlide.Add("margin-left:0%");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao inicializar o LoadMarginsLeft: " + ex.Message);
+
+            }
+
         }
+
 
         void PreviousCard()
         {
-            if (cardsUtilsServices.CountSlide > 0)  
+            if (cardsUtilsServices.CountSlide > 0)
             {
                 cardsUtilsServices.MarginLeftSlide[cardsUtilsServices.CountSlide - 1] = "margin-left:0%";
                 cardsUtilsServices.CountSlide--;
@@ -92,7 +104,7 @@ namespace RCLProdutos.Shared.Cards
             }
             else
             {
-                if (cardsUtilsServices.MarginLeftSlide.Count > 0) 
+                if (cardsUtilsServices.MarginLeftSlide.Count > 0)
                 {
                     cardsUtilsServices.MarginLeftSlide[0] = "margin-lef:0%";
                     IsDisbledPrevious = true;

@@ -12,4 +12,10 @@
     <ProjectReference Include="..\RCL\RCLAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="pages\Compras.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

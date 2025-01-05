@@ -1,23 +1,16 @@
-﻿@using RCLAPI.Services
-@using RCLAPI.DTO
-@using Microsoft.AspNetCore.Components
-@using RCLProdutos.Shared.Slider
-@using RCLProdutos.Shared.Cards
-@using RCLProdutos.Shared.CardProduto
+﻿    @using RCLAPI.DTO
+    @using Microsoft.AspNetCore.Components
 
-@inject NavigationManager NavigationManager
+    @inject NavigationManager NavigationManager
 
-@* <div class="card" style="background-image:url(@pathurlimg); @marginLeft;position:center"> *@
-
-@if (categoria?.Imagem is not null)
-
-{
-    <div title="@categoria.Nome" class="card" style="background-image:url(@categoria.Imagem); @marginLeft;position:center;">
-        <div>
-            <p>@categoria.Nome</p>
+    @if (categoria?.UrlImagem is not null)
+    {
+        <div title="@categoria.Nome" class="card" style="background-image:url(@categoria.UrlImagem) @marginLeft position:center">
+            <div>
+                <p>@categoria.Nome</p>
+            </div>
+            <div class="footer-button">
+                <a href="" @onclick='(() => Navega(categoria))'> <img alt="Pesquisar categoria" src="images/searchredicon50x50.png" width="30" /></a>
+            </div>
         </div>
-        <div class="footer-button">
-            <a href="" @onclick='(() => Navega(categoria))'> <img alt="Pesquisar categoria" src="images/searchredicon50x50.png" width="30" /></a>
-        </div>
-    </div>
-}
+    }

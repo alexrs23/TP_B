@@ -9,5 +9,6 @@ namespace APIRestFull.Repositories
         Task<IEnumerable<Produto>> ObterProdutosMaisVendidosAsync();
         Task<Produto> ObterDetalheProdutoAsync(int id);
         Task<IEnumerable<Produto>> ObterTodosProdutosAsync();
+        Task<IEnumerable<Produto>> GetProdutosEspecificos(string? especifico, int? idCat);
     }
 }

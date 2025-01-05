@@ -1,8 +1,13 @@
-﻿<a href="carrinho" class="btn-carrinho" t>
+﻿@inject NavigationManager NavigationManager
+
+<a @onclick="NavigateToCarrinho" class="btn-carrinho">
     <img src="images/cart.png" alt="Carrinho" />
 </a>
 
-
 @code {
-
+    private void NavigateToCarrinho()
+    {
+        NavigationManager.NavigateTo("/Carrinho");
+    }
 }
+

@@ -161,7 +161,7 @@
                             <div class="row justify-content-md-around" style="height: 80px;">
                                 <div class="col-md-10 ">
                                     <a href="" @onclick='(() => Incrementa("desincrementa",""))'> <img alt="Desincrementar" src="images/minus.png" width="30" /></a>
-                                    &nbsp;@quantidade&nbsp;
+                                     @quantidade 
                                     <a href="" @onclick='(() => Incrementa("incrementa",""))'> <img alt="Incrementar" src="images/plus.png" width="30" /></a>
                                 </div>
                             </div>
@@ -174,10 +174,8 @@
                                         <p>@limiteQtd</p>
                                         <p>Total: @quantidade @produto.modoentrega.Nome x @produto.Preco €/@produto.modoentrega.Nome =  @total €</p>
                                     
-
-                                         <BtnCategorias qtdTotal={@quantidade}/>
+                                        <BtnCategorias qtdTotal={@quantidade}/>
                               
-                                    
                                     }
 
                                 </div>
@@ -194,4 +192,3 @@
     </div>
 
 }
-

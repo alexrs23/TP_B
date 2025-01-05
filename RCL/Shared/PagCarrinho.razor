@@ -1,0 +1,58 @@
+﻿<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h1>Carrinho de Compras</h1>
+                        @if (carrinhoItens == null)
+
+                        {
+                            <p><em>Carregando...</em></p>
+                        }
+
+                        else if (!carrinhoItens.Any())
+
+                        {
+                            <p>O carrinho está vazio.</p>
+                        }
+
+                        else
+
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Produto ID</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço Unitário</th>
+                                        <th>Valor Total</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in carrinhoItens)
+
+                                    {
+                                        <tr>
+                                            <td>@item.ProdutoId</td>
+                                            <td>@item.Quantidade</td>
+                                            <td>@item.PrecoUnitario</td>
+                                            <td>@item.ValorTotal</td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm" @onclick="(() => RemoverItem(item.Id))">Remover</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <h3>Total: @carrinhoTotal €</h3>
+                            <button class="btn btn-success" @onclick="FinalizarCompra">Finalizar Compra</button>
+                            <button class="btn btn-primary" @onclick="Voltar">Voltar</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

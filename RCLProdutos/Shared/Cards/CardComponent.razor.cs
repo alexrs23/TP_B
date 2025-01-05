@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-
 using RCLAPI.DTO;
 
 namespace RCLProdutos.Shared.Cards
@@ -10,7 +9,7 @@ namespace RCLProdutos.Shared.Cards
         public Categoria? categoria { get; set; }
 
         [Parameter]
-        public int? selectedCatId { get; set; }    
+        public int? selectedCatId { get; set; }
 
         [Parameter]
         public string? marginLeft { get; set; }

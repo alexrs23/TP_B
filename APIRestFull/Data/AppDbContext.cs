@@ -15,6 +15,8 @@ namespace APIRestFull.Context
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<ModoEntrega> ModosEntrega { get; set; }
+        public DbSet<ItemCarrinhoCompra> ItemCarrinhoCompras { get; set; }
+        public DbSet<ProdutoFavorito> ProdutoFavoritos { get; set; }
     }
 }
 

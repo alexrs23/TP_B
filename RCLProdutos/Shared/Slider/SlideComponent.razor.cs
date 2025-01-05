@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using RCLAPI.DTO;
 using RCLAPI.Services;
 using RCLProdutos.Services.Interfaces;
@@ -11,9 +13,12 @@ namespace RCLProdutos.Shared.Slider;
 public partial class SlideComponent
 {
 
+    [Inject]
+    public ILogger<SlideComponent> _logger { get; set; }
+
     [SupplyParameterFromQuery]
     public int prodSugereId { get; set; }
-    
+
     [Parameter]
     public ProdutoDTO? produto { get; set; } = new ProdutoDTO();
 
@@ -25,6 +30,10 @@ public partial class SlideComponent
 
     [Inject]
     public IApiServices? _apiServices { get; set; }
+
+    [Inject]
+    public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
     public int countSlide { get; set; } = 0;
 
     public ProdutoFavorito? produtoFavorito { get; set; } = new ProdutoFavorito();
@@ -32,20 +41,23 @@ public partial class SlideComponent
     private string? favoritoicon { get; set; }
     private string? pathurlimg { get; set; }
 
+
     protected override async Task OnInitializedAsync()
     {
-        if (prodSugereId >0) {
+        if (prodSugereId > 0)
+        {
             produto = await _apiServices.GetDetalheProduto(prodSugereId);
 
             modalDisplay2 = "block";
         }
-        else { 
-            modalDisplay2 = "none"; 
+        else
+        {
+            modalDisplay2 = "none";
         }
 
         modalDisplay2 = "none";
         modalDisplay1 = "none";
-       
+
         mostraInfo = "none";
         fazcompra = "none";
         if (!produto.Favorito)
@@ -53,7 +65,7 @@ public partial class SlideComponent
         else
         {
             favoritoicon = $"images/heartfilltransp.png";
-        }
+        }// Use o clienteId conforme necessário
     }
 
     private string mostraInfo;
@@ -92,7 +104,7 @@ public partial class SlideComponent
 
     private bool abreModal1 = false;
     private bool abreModal2 = false;
-    
+
     public async void AbreFecha(string janela1, string janela2)
     {
         if (janela1 == "abre")
@@ -109,17 +121,35 @@ public partial class SlideComponent
         {
             modalDisplay2 = "none";
             abreModal2 = false;
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? clienteId = null;
 
-                //var carrinhoCompra = new ItemCarrinhoCompra()
-                //{
-                //    Quantidade = quantidade,
-                //    PrecoUnitario = produto.Preco,
-                //    ValorTotal = total,
-                //    ProdutoId = produto.Id,
-                //    ClienteId = "user"
-                //};
-
-                //var response = await _apiServices.AdicionaItemNoCarrinho(carrinhoCompra);
+            if (user.Identity.IsAuthenticated)
+            {
+                clienteId = user.FindFirst(c => c.Type == "sub")?.Value; // ou outro claim que contenha o ID do cliente
+                Console.WriteLine("\n" + clienteId + "\n");
+                if (string.IsNullOrEmpty(clienteId))
+                {
+                    _logger.LogError($"Erro ao adicionar ao carrinho, ClienteId vazio");
+                    return;
+                }
+                var Carrinho = new ItemCarrinhoCompra()
+                {
+                    ProdutoId = produto.Id,
+                    Quantidade = quantidade,
+                    ClienteId = clienteId,
+                    PrecoUnitario = produto.Preco,
+                    ValorTotal = total,
+                    imageURL = produto.UrlImagem
+                };
+                var response = await _apiServices.AdicionaItemNoCarrinho(Carrinho);
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("CLIENTE NAO ESTA AUTENTICADO");
+            }
 
         }
 
@@ -156,13 +186,13 @@ public partial class SlideComponent
         if (incredec == "incrementa")
         {
             quantidade++;
-            if(quantidade > produto.EmStock)
+            if (quantidade > produto.EmStock)
             {
                 quantidade--;
 
                 limiteQtd = "Lamentamos mas não existe mais stock!";
             }
-            
+
         }
 
         else if (incredec == "desincrementa" && quantidade > 0)
