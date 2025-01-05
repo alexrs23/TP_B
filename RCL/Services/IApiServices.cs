@@ -1,4 +1,5 @@
-﻿using RCLAPI.DTO;
+﻿using APIRestFull.Models;
+using RCLAPI.DTO;
 
 namespace RCLAPI.Services;
 
@@ -13,4 +14,5 @@ public interface IApiServices
     public Task<List<ProdutoFavorito>> GetFavoritos(string utilizadorId);
     public Task<ApiResponse<bool>> RegistarUtilizador(string username, string email,string password, string telemovel);
     public Task<ApiResponse<bool>> Login(string email, string password);
+    public Task<ApiResponse<bool>> AssignRole(UserRole model);
 }

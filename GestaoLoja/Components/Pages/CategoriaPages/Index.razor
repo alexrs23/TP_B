@@ -6,6 +6,9 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
 
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin, Gestor")]
+
 <PageTitle>Categorias</PageTitle>
 
 <h1>Categorias</h1>

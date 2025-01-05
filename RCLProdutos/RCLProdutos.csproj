@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RCLComum\RCLComum.csproj" />
     <ProjectReference Include="..\RCL\RCLAPI.csproj" />
   </ItemGroup>
 

@@ -5,11 +5,13 @@
 @using Microsoft.EntityFrameworkCore
 @using GestaoLoja.Data
 
+@attribute [Authorize(Roles = "Admin")]
+
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
 @inject NavigationManager NavigationManager
 @inject ILogger<Assign> Logger
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @rendermode InteractiveServer
 
 <h3>Atribuir Roles aos Usuários</h3>
@@ -20,7 +22,6 @@
 }
 else
 {
-	<button class="btn-primary" @onclick="TestarClique">Atualizar Roles</button>
 	<table class="table">
 		<thead>
 			<tr>
@@ -52,6 +53,9 @@ else
 						<button class="btn btn-primary" id="btn-@user.Id" @onclick="async () => await UpdateRole(user.Id)">
 							Atribuir Role
 						</button>
+						<button class="btn btn-danger" @onclick="async () => await RemoveUser(user.Id)">
+							Remover
+						</button>
 					</td>
 				</tr>
 			}
@@ -63,14 +67,19 @@ else
 	private List<ApplicationUser>? users;
 	private List<IdentityRole>? roles;
 	private Dictionary<string, string> userRoles = new();
+	private string? currentUserId;
 
-	private void TestarClique()
-	{
-		Console.WriteLine("Botão clicado!");
-	}
 
 	protected override async Task OnInitializedAsync()
 	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var currentLogin = authState.User;
+		if (currentLogin.Identity?.IsAuthenticated == true)
+		{
+			var currentUser = await UserManager.GetUserAsync(currentLogin);
+			currentUserId = currentUser?.Id;
+		}
+
 		users = await UserManager.Users.ToListAsync();
 		roles = await RoleManager.Roles.ToListAsync();
 
@@ -86,6 +95,13 @@ else
 
 	private async Task UpdateRole(string userId)
 	{
+		if (userId == currentUserId)
+		{
+			Logger.LogError("Não é possível remover o usuário com sessão iniciada.");
+			Console.WriteLine("Não é possível remover o usuário com sessão iniciada.");
+			return;
+		}
+
 		var user = await UserManager.FindByIdAsync(userId);
 		if (user == null)
 		{
@@ -122,5 +138,28 @@ else
 		
 		NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad:true);
 
+	}
+
+	private async Task RemoveUser(string userId)
+	{
+		var user = await UserManager.FindByIdAsync(userId);
+		if (user == null)
+		{
+			Logger.LogError($"Usuário com ID '{userId}' não encontrado.");
+			Console.WriteLine($"Usuário com ID '{userId}' não encontrado.");
+			return;
+		}
+
+		var result = await UserManager.DeleteAsync(user);
+		if (!result.Succeeded)
+		{
+			var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+			Logger.LogError($"Erro ao remover usuário: {errors}");
+			Console.WriteLine($"Erro ao remover usuário: {errors}");
+			return;
+		}
+
+		users.Remove(user);
+		StateHasChanged();
 	}
 }

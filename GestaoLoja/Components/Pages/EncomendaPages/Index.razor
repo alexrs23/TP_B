@@ -4,6 +4,9 @@
 @using GestaoLoja.Entities
 @inject ApplicationDbContext DbContext
 
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin, Gestor")]
+
 <h3>Lista de Encomendas</h3>
 
 @if (encomendas == null)
