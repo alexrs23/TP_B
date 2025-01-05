@@ -90,7 +90,7 @@ namespace APIRestFull.Controllers
                 var result = await _roleManager.CreateAsync(new IdentityRole(role));
                 if (result.Succeeded)
                 {
-                    return Ok(new {message = "Role add successfully"});
+                    return Ok(new { message = "Role add successfully" });
                 }
                 return BadRequest(result.Errors);
             }

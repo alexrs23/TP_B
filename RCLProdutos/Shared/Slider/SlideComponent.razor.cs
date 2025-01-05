@@ -5,6 +5,7 @@ using RCLAPI.DTO;
 using RCLAPI.Services;
 using RCLProdutos.Services.Interfaces;
 using System.Net.NetworkInformation;
+using System.Security.Claims;
 using System.Xml.Linq;
 using Xamarin.Essentials;
 
@@ -12,7 +13,6 @@ namespace RCLProdutos.Shared.Slider;
 
 public partial class SlideComponent
 {
-
     [Inject]
     public ILogger<SlideComponent> _logger { get; set; }
 
@@ -30,6 +30,9 @@ public partial class SlideComponent
 
     [Inject]
     public IApiServices? _apiServices { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
 
     [Inject]
     public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
@@ -121,14 +124,14 @@ public partial class SlideComponent
         {
             modalDisplay2 = "none";
             abreModal2 = false;
+
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             string? clienteId = null;
-
             if (user.Identity.IsAuthenticated)
             {
-                clienteId = user.FindFirst(c => c.Type == "sub")?.Value; // ou outro claim que contenha o ID do cliente
-                Console.WriteLine("\n" + clienteId + "\n");
+                clienteId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
                 if (string.IsNullOrEmpty(clienteId))
                 {
                     _logger.LogError($"Erro ao adicionar ao carrinho, ClienteId vazio");
@@ -138,17 +141,18 @@ public partial class SlideComponent
                 {
                     ProdutoId = produto.Id,
                     Quantidade = quantidade,
-                    ClienteId = clienteId,
+                    ClienteId = clienteId, //Aqui
                     PrecoUnitario = produto.Preco,
                     ValorTotal = total,
                     imageURL = produto.UrlImagem
                 };
+                // CHAMADA A API AQUI
                 var response = await _apiServices.AdicionaItemNoCarrinho(Carrinho);
                 StateHasChanged();
             }
             else
             {
-                Console.WriteLine("CLIENTE NAO ESTA AUTENTICADO");
+                NavigationManager.NavigateTo("/login");
             }
 
         }
