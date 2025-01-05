@@ -1,10 +1,8 @@
 ﻿using APIRestFull.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 
@@ -58,6 +56,7 @@ namespace APIRestFull.Controllers
                 {
                      new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
                      new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                      new Claim(ClaimTypes.Email, user.Email!)
                 };
 
                 authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
@@ -80,12 +79,12 @@ namespace APIRestFull.Controllers
 
             return Unauthorized();
         }
-       
+
 
         [HttpPost("add-role")]
         public async Task<IActionResult> AddRole([FromBody] string role)
         {
-            if(!await _roleManager.RoleExistsAsync(role))
+            if (!await _roleManager.RoleExistsAsync(role))
             {
                 var result = await _roleManager.CreateAsync(new IdentityRole(role));
                 if (result.Succeeded)
