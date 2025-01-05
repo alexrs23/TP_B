@@ -16,7 +16,7 @@ builder.Services.AddScoped<HttpClient>(sp =>
     new HttpClient { BaseAddress = new Uri(RCLAPI.AppConfig.BaseUrl) });
 
 // Register IApiServices
-builder.Services.AddScoped<IApiServices, ApiService>();
+builder.Services.AddScoped<IApiServices, ApiServices>();
 
 // Register ICardsUtilsServices
 builder.Services.AddScoped<ICardsUtilsServices, RCLProdutos.Services.CardsUtilsServices>();
