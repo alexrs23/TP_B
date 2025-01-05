@@ -73,8 +73,6 @@ public class ProdutoRepository : IProdutoRepository
         IQueryable<Produto> query = dbContext.Produtos
            .Include(x => x.modoentrega)
             .Include(x => x.categoria);
-
-
         if (especifico == "todos" || especifico == null)
         {
             return await query
@@ -91,7 +89,6 @@ public class ProdutoRepository : IProdutoRepository
                   .ThenBy(x => x.Nome)
                 .ToListAsync();
         }
-
         return null;
     }
 }

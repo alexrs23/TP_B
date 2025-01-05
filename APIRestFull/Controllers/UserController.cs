@@ -23,7 +23,7 @@ namespace APIRestFull.Controllers
         [HttpPost("ActualizaFavorito/{acao}/{produtoId}")]
         public async Task<IActionResult> ActualizaFavorito(string acao, int produtoId)
         {
-            var result = await _userRepository.ActualizaFavorito(acao, produtoId, "Jorge");
+            var result = await _userRepository.ActualizaFavorito(acao, produtoId, "Jorge");  //mudar o nome
             if (!result)
                 return BadRequest();
             return Ok(result);

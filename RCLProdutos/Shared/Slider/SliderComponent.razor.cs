@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using RCLAPI;
 using RCLAPI.DTO;
 using RCLAPI.Services;
 using RCLProdutos.Services.Interfaces;
@@ -25,7 +26,7 @@ namespace RCLProdutos.Shared.Slider
         [Inject]
         public ISliderUtilsServices sliderUtilsService { get; set; }
         private List<ProdutoDTO>? produtos { get; set; }
-        private List<ProdutoFavorito>? userFavoritos { get; set; }
+        private List<ProdutoFavorito>? UserFavoritos { get; set; }
 
         public ProdutoDTO sugestaoProduto = new ProdutoDTO();
         private int witdthPerc { get; set; } = 0;
@@ -68,14 +69,14 @@ namespace RCLProdutos.Shared.Slider
             {
                 produtos = await _apiServices!.GetProdutosEspecificos(produtosEspecificos, categoriasenviadaID);
 
-                userFavoritos = await _apiServices!.GetFavoritos("Jorge");
+                UserFavoritos = await _apiServices!.GetFavoritos("Jorge");
 
-                if (userFavoritos != null) // verificação do valor null
+                if (UserFavoritos != null) // verificação do valor null
                 {
-                    for (int i = 0; i < userFavoritos.Count; i++)
+                    for (int i = 0; i < UserFavoritos.Count; i++)
                         for (int j = 0; j < produtos?.Count; j++) // verificação do valor null
-                            if (produtos[j].Id == userFavoritos[i].ProdutoId)
-                                produtos[j].Favorito = userFavoritos[i].Efavorito;
+                            if (produtos[j].Id == UserFavoritos[i].ProdutoId)
+                                produtos[j].Favorito = UserFavoritos[i].Efavorito;
 
                 }
 

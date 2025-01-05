@@ -2,13 +2,11 @@
 using APIRestFull.Data;
 using APIRestFull.Entities;
 using Microsoft.EntityFrameworkCore;
-
 namespace APIRestFull.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-
         public UserRepository(AppDbContext context)
         {
             _context = context;
@@ -19,7 +17,6 @@ namespace APIRestFull.Repositories
             if (favs is null) return null;
             return favs;
         }
-
         public async Task<bool> ActualizaFavorito(string acao, int produtoId, string userName)
         {
             var produto = await _context.ProdutoFavoritos.FirstOrDefaultAsync(x => x.ProdutoId == produtoId && x.UserName == userName);

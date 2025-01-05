@@ -1,5 +1,4 @@
 ﻿using APIRestFull.Entities;
-
 namespace APIRestFull.Repositories
 {
     public interface IUserRepository
