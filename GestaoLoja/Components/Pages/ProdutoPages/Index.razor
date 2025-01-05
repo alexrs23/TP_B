@@ -3,6 +3,10 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using GestaoLoja.Entities
 @using GestaoLoja.Data
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Admin, Gestor")]
+
 @implements IAsyncDisposable
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
 
@@ -16,7 +20,7 @@
 
 <QuickGrid Class="table" Items="context.Produtos">
     <TemplateColumn Context="produto">
-        <img src="@produto.UrlImagem" alt="Imagem do Produto" style="max-width: 100px; max-height: 100px;" />
+        <img src="/img/@produto.UrlImagem" alt="Imagem do Produto" style="max-width: 100px; max-height: 100px;" />
     </TemplateColumn>
     <PropertyColumn Property="produto => produto.Nome" />
     <PropertyColumn Property="produto => produto.Detalhe" />

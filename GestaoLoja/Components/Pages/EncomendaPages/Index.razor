@@ -1,0 +1,51 @@
+﻿@page "/encomendas"
+
+@using GestaoLoja.Data
+@using GestaoLoja.Entities
+@inject ApplicationDbContext DbContext
+
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin, Gestor")]
+
+<h3>Lista de Encomendas</h3>
+
+@if (encomendas == null)
+{
+    <p>Carregando...</p>
+}
+else if (!encomendas.Any())
+{
+    <p>Nenhuma encomenda encontrada.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var encomenda in encomendas)
+            {
+                <tr>
+                    <td>@encomenda.EncomendaId</td>
+                    <td>@encomenda.Cliente.Email</td>
+                    <td>@encomenda.DataEncomenda</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Encomenda> encomendas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        encomendas = DbContext.Encomendas.ToList();
+    }
+}

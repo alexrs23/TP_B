@@ -4,6 +4,10 @@
 @inject IDbContextFactory<GestaoLoja.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Admin, Gestor")]
+
 <PageTitle>Remover Produto</PageTitle>
 
 <h1>Remover</h1>
